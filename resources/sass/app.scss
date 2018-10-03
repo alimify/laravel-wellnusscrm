@@ -8,6 +8,13 @@
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
 
+@import "~font-awesome/scss/font-awesome";
+
+@import "~datatables.net-dt/css/jquery.dataTables.css";
+
+@import "~datatables.net-bs4/css/dataTables.bootstrap4.css";
+
+
 .navbar-laravel {
   background-color: #fff;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);

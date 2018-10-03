@@ -18,5 +18,11 @@
         "lodash": "^4.17.5",
         "popper.js": "^1.12",
         "vue": "^2.5.7"
+    },
+    "dependencies": {
+        "datatables.net": "^1.10.19",
+        "datatables.net-bs4": "^1.10.19",
+        "datatables.net-dt": "^1.10.19",
+        "font-awesome": "^4.7.0"
     }
 }
