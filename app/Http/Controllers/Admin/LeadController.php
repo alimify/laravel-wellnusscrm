@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Lead;
+use App\Models\Role;
+use App\Models\Task;
+use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -17,8 +20,9 @@ class LeadController extends Controller
     {
         $leads = Lead::all();
         $trashes = Lead::onlyTrashed()->get();
+        $callers = Role::find(2)->Users;
 
-        return response()->view('admin.lead.index',compact('leads','trashes'));
+        return response()->view('admin.lead.index',compact('leads','trashes','callers'));
     }
 
     /**
@@ -152,5 +156,29 @@ class LeadController extends Controller
 
         return redirect()->back()
                           ->with('status','Lead Note Updated..');
+    }
+
+
+    public function sendTask(Request $request){
+        $this->validate($request,[
+            'callerId' => 'required'
+        ]);
+
+        $user = User::find($request->callerId);
+
+
+        $task = [];
+
+        foreach ($request->task as $t){
+            $task[] = [
+                'user_id' => $request->callerId,
+                'lead_id' => $t
+            ];
+        }
+
+        Task::insert($task);
+
+        return redirect()->back()
+                          ->with('status','Task Successfully Send to'.$user->name);
     }
 }

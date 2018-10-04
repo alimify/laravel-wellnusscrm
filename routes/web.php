@@ -14,7 +14,7 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('admin.dashboard');
+    return redirect()->route('login');
 });
 
 Auth::routes();
@@ -56,6 +56,7 @@ Route::group(['as' => 'admin.','prefix' => 'admin','namespace' => 'Admin','middl
     Route::get('lead/restore/{id}','LeadController@restoreSingle')->name('lead.restore.single');
     Route::post('lead/note','LeadController@editNote')->name('lead.note.edit');
 
+    Route::post('lead/sendTask','LeadController@sendTask')->name('lead.sendTask');
 });
 
 
@@ -64,6 +65,8 @@ Route::group(['as' => 'admin.','prefix' => 'admin','namespace' => 'Admin','middl
 Route::group(['as' => 'caller.','prefix' => 'caller','namespace' => 'Caller','middleware' => ['caller']],function() {
 
     Route::get('dashboard','DashboardController@index')->name('dashboard');
+    Route::post('lead/note','LeadController@editNote')->name('lead.note.edit');
+    Route::get('lead/status/{id}/{status}','LeadController@leadStatus')->name('lead.status');
 
 });
 

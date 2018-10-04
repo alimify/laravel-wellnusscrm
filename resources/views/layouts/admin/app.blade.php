@@ -31,7 +31,7 @@
 
         @include('layouts.admin.partials.sidebar')
 
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4 mt-3">
         @include('layouts.admin.partials.notice')
         @yield('content')
     </main>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Lead;
+use App\Models\Product;
 use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -57,17 +58,34 @@ class ApiController extends Controller
             ]);
         }
 
-        $supplier = Supplier::find($request->supplier_id);
+        $supplier = Supplier::where('id','=',$request->supplier_id)->first();
 
+        if(!isset($supplier->id)){
+
+            return response()->json([
+                'status' => false,
+                'code' => 6,
+                'message' => 'Supplier not found'
+            ]);
+        }
 
         if($supplier->api != $request->api_key){
             return response()->json([
                 'status' => false,
-                'code' => 6,
+                'code' => 7,
                 'message' => 'API Key do not match'
             ]);
         }
 
+        $product = Product::where('id',$request->product_id)->first();
+
+        if(!isset($product->id)){
+            return response()->json([
+                'status' => false,
+                'code' => 8,
+                'message' => 'Product not found'
+            ]);
+        }
 
 
         $lead = new Lead();

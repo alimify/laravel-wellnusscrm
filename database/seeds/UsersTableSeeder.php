@@ -27,7 +27,7 @@ class UsersTableSeeder extends Seeder
             [
                 'id' => 2,
                 'name' => 'Zisan Abdullah',
-                'email' => 'zisancaller@test.com',
+                'email' => 'caller@mail.com',
                 'role_id' => 2,
                 'userextra_id' => 2,
                 'password' => Hash::make('calleraccount')

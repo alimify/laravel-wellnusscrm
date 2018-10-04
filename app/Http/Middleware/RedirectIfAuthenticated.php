@@ -25,7 +25,7 @@ class RedirectIfAuthenticated
                 return redirect()->route('caller.dashboard');
             }
 
-            return redirect('/home');
+            return redirect('/');
         }
 
         return $next($request);

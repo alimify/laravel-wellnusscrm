@@ -24,8 +24,8 @@ class CreateLeadsTable extends Migration
             $table->text('note');
             $table->string('order_id')->nullable();
             $table->string('publisher_id')->nullable();
-            $table->integer('status_admin')->default(4);
-            $table->integer('status_caller')->default(4);
+            $table->integer('status_admin')->default(3);
+            $table->integer('status_caller')->default(3);
             $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();

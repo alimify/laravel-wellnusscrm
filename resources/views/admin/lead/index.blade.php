@@ -15,11 +15,14 @@
         <a href="{{route('admin.lead.index')}}">Leads ({{$leads->count()}})</a>
         - <a href="{{route('admin.lead.index',['type' => 'trash'])}}">Trash ({{$trashes->count()}})</a>
         - <a href="{{route('admin.lead.restore.all')}}">Restore All</a>
-
+<form method="POST" action="{{route('admin.lead.sendTask')}}">
+    @csrf
+    @method("POST")
         <div class="table-responsive">
             <table id="example" class="table table-striped table-bordered" style="width:100%">
                 <thead>
                 <tr>
+                    <th></th>
                     <th>#</th>
                     <th>Product ID</th>
                     <th>Product Code</th>
@@ -40,6 +43,7 @@
 
                 @foreach((isset($_REQUEST['type']) && $_REQUEST['type'] == 'trash' ? $trashes : $leads) as $lead)
                     <tr>
+                        <td><input type="checkbox" name="task[]" value="{{$lead->id}}"></td>
                         <td>{{$lead->id}}</td>
                         <td>{{$lead->product_id}}</td>
                         <td>{{$lead->Product->code}}</td>
@@ -73,6 +77,15 @@
                 </tbody>
             </table>
         </div>
+    <div class="justify-content-center form-inline">
+    <select name="callerId" class="form-control col-md-3 col-sm-8 form-inline">
+        @foreach($callers as $caller)
+            <option value="{{$caller->id}}">{{$caller->name}}</option>
+            @endforeach
+    </select>
+    <input type="submit" name="submit" value="Submit" class="btn btn-primary btn-success form-inline">
+    </div>
+</form>
     @else
         <div class="text-warning text-center">No data available.</div>
     @endif
@@ -136,11 +149,11 @@
                 deleteForm.submit()
             })
 
+            $(".note-modal").click(function () {
+                $("#modal-note-id").val(this.dataset.src)
+                $("#modal-note").text(this.dataset.content)
+            })
 
-        $(".note-modal").click(function () {
-            $("#modal-note-id").val(this.dataset.src)
-            $("#modal-note").text(this.dataset.content)
-        })
 
 
         } );
