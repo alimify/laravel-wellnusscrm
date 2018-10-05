@@ -28,6 +28,11 @@ class StatusesTableSeeder extends Seeder
                 'id' => 3,
                 'title' => 'Hold',
                 'class' => 'btn btn-warning'
+            ],
+            [
+                'id' => 4,
+                'title' => 'Trash',
+                'class' => 'btn btn-danger'
             ]
         ]);
     }

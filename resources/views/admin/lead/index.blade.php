@@ -188,12 +188,13 @@
                         status_admin: `<span class="${item.admin_status.class}">${item.admin_status.title}</span>`,
                         status_caller: `<span class="${item.caller_status.class}">${item.caller_status.title}</span>`,
                         created_at: item.created_at,
-                        action: !gType ? `<a title="Confirm" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="1"><i class="fa fa-check" aria-hidden="true"></i></a><a title="Cancel" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="2"><i class="fa fa-times-circle" aria-hidden="true"></i></a><a title="Hold" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="3"><i class="fa fa-pause" aria-hidden="true"></i></a><a title="Edit" href="javascript:void(0)" class="ml-1 edit-item" data-id="${item.id}" data-name="${item.name? item.name:''}" data-phone="${item.phone ? item.phone:'' }" data-email="${item.email?item.email:''}" data-address="${item.address?item.address:''}" data-status="${item.status_caller?item.status_caller:''}"><i class="fa fa-edit" aria-hidden="true"></i></a><a title="Trash" href="javascript:void(0)" class="delete-item ml-1" data-id="${item.id}"><i class="fa fa-trash" aria-hidden="true"></i></a>`:
-                              `<a title="Restore" href="javascript:void(0)" class="restore-item ml-1" data-id="${item.id}"><i class="fa fa-undo" aria-hidden="true"></i></a> <a title="Delete Permanently" href="javascript:void(0)" class="delete-item ml-1" data-id="${item.id}"><i class="fa fa-trash" aria-hidden="true"></i></a>`
+                        action: `<a title="Confirm" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="1"><i class="fa fa-check" aria-hidden="true"></i></a><a title="Cancel" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="2"><i class="fa fa-times-circle" aria-hidden="true"></i></a><a title="Hold" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="3"><i class="fa fa-pause" aria-hidden="true"></i></a><a title="Edit" href="javascript:void(0)" class="ml-1 edit-item" data-id="${item.id}" data-name="${item.name? item.name:''}" data-phone="${item.phone ? item.phone:'' }" data-email="${item.email?item.email:''}" data-address="${item.address?item.address:''}" data-status="${item.status_caller?item.status_caller:''}"><i class="fa fa-edit" aria-hidden="true"></i></a><a title="Trash" href="javascript:void(0)" class="status-item ml-1" data-id="${item.id}" data-status="4"><i class="fa fa-trash" aria-hidden="true"></i></a>`
                     });
                 })
 
                 $('#example').DataTable({
+                    destroy: true,
+                    bDestroy: true,
                     data: data,
                     columns:[
                         {title:'',data:'checkbox'},
@@ -231,34 +232,18 @@
                 const data = JSON.parse(a.target.responseText);
                 $("#noteModal").modal('hide')
                 if(data.status){
-                    $("#example").DataTable().destroy();
-                    getURL(finalLeadURL(gStatus,gType),printLeadTable,errorMsg,errorMsg)
+                    
+                    getURL(finalLeadURL(gStatus),printLeadTable,errorMsg,errorMsg)
                 }else{
                     errorMsg()
                 }
             },
-            deleteLead = function (a) {
-                console.log(a.target.responseText)
-                const data = JSON.parse(a.target.responseText);
-              if(data.status){
-                  $("#example").DataTable().destroy()
-                  getURL(finalLeadURL(gStatus,gType),printLeadTable,errorMsg,errorMsg)
-              }
-            },
-            restoreLead = function (a) {
-                console.log(a.target.responseText)
-                    const data = JSON.parse(a.target.responseText);
-                    if(data.status){
-                        $("#example").DataTable().destroy()
-                        getURL(finalLeadURL(gStatus,gType),printLeadTable,errorMsg,errorMsg)
-                    }
-                },
             leadStatus = function (a) {
                 console.log(a.target.responseText)
                 const data = JSON.parse(a.target.responseText);
                 if(data.status){
                     $("#example").DataTable().destroy()
-                    getURL(finalLeadURL(gStatus,gType),printLeadTable,errorMsg,errorMsg)
+                    getURL(finalLeadURL(gStatus),printLeadTable,errorMsg,errorMsg)
                 }
             },
             leadEdit = function (a) {
@@ -266,7 +251,7 @@
                 const data = JSON.parse(a.target.responseText);
                 if(data.status){
                     $("#example").DataTable().destroy()
-                    getURL(finalLeadURL(gStatus,gType),printLeadTable,errorMsg,errorMsg)
+                    getURL(finalLeadURL(gStatus),printLeadTable,errorMsg,errorMsg)
                 }
             },
             sendLead = function (a) {
@@ -274,7 +259,7 @@
                 const data = JSON.parse(a.target.responseText);
                 if(data.status){
                     $("#example").DataTable().destroy()
-                    getURL(finalLeadURL(gStatus,gType),printLeadTable,errorMsg,errorMsg)
+                    getURL(finalLeadURL(gStatus),printLeadTable,errorMsg,errorMsg)
                 }
             };
 
@@ -289,15 +274,12 @@
         var    appURL = '{{route('index')}}',
                leadURI = '{{route('admin.lead.ajax')}}',
                leadURL = leadURI.replace(appURL,''),
-               gType = false,
                gStatus = false,
-               finalLeadURL = function(status = false,type = false){
+               finalLeadURL = function(status = false){
                        gStatus = status
                        status = status ? `&status=${status}` : false
-                       gType = type
-                       type = type ? `&type=${type}` : false;
 
-            return `${leadURL}?fromDate=${$("#fromDate").val()}&toDate=${$("#toDate").val()}${status ? status : ''}${type ? type : ''}`
+            return `${leadURL}?fromDate=${$("#fromDate").val()}&toDate=${$("#toDate").val()}${status ? status : ''}`
                };
         getURL(finalLeadURL(),printLeadTable,errorMsg,errorMsg)
 
@@ -346,26 +328,6 @@
                 getURL(finalURL,noteEdit,errorMsg,errorMsg,data)
             })
 
-            $("body").on('click','.delete-item',function () {
-                const URL = `{{route('admin.lead.destroy','deleteit')}}`.replace('deleteit',this.dataset.id),
-                       finalURL = URL.replace(appURL,''),
-                       data  = {
-                          _method:'DELETE',
-                       }
-
-                       getURL(finalURL,deleteLead,errorMsg,errorMsg,data)
-            })
-
-
-            $("body").on('click','.restore-item',function () {
-                const URL = `{{route('admin.lead.restore.single','deleteit')}}`.replace('deleteit',this.dataset.id),
-                    finalURL = URL.replace(appURL,''),
-                    data  = {
-                        _method:'POST',
-                    }
-
-                getURL(finalURL,restoreLead,errorMsg,errorMsg,data)
-            })
 
 
             $("body").on('click','.status-item',function () {
@@ -417,40 +379,33 @@
             $("#toDate").datepicker({ dateFormat: 'dd-mm-yy' })
 
             $("#view-leads").click(function () {
-                $("#example").DataTable().destroy();
                 getURL(finalLeadURL(),printLeadTable,errorMsg,errorMsg)
             })
 
             $("#view-hold").click(function () {
-                $("#example").DataTable().destroy();
                 getURL(finalLeadURL(3),printLeadTable,errorMsg,errorMsg)
             })
 
 
             $("#view-cancelled").click(function () {
-                $("#example").DataTable().destroy();
                 getURL(finalLeadURL(2),printLeadTable,errorMsg,errorMsg)
             })
 
 
             $("#view-confirm").click(function () {
-                $("#example").DataTable().destroy();
                 getURL(finalLeadURL(1),printLeadTable,errorMsg,errorMsg)
             })
 
             $("#view-trash").click(function () {
-                $("#example").DataTable().destroy();
-                getURL(finalLeadURL(false,'trash'),printLeadTable,errorMsg,errorMsg)
+                getURL(finalLeadURL(4),printLeadTable,errorMsg,errorMsg)
             })
 
             $("#fromDate").change(function () {
-                $("#example").DataTable().destroy();
-                getURL(finalLeadURL(gStatus,gType),printLeadTable,errorMsg,errorMsg)
+                getURL(finalLeadURL(gStatus),printLeadTable,errorMsg,errorMsg)
             })
 
             $("#toDate").change(function () {
-                $("#example").DataTable().destroy();
-                getURL(finalLeadURL(gStatus,gType),printLeadTable,errorMsg,errorMsg)
+                getURL(finalLeadURL(gStatus),printLeadTable,errorMsg,errorMsg)
             })
 
         } );

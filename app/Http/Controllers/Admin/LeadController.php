@@ -8,15 +8,10 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB;
 
 class LeadController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
 
@@ -25,6 +20,9 @@ class LeadController extends Controller
 
         return response()->view('admin.lead.index',compact('callers','statuses'));
     }
+
+
+
 
 
     public function indexAjax(Request $request){
@@ -50,34 +48,21 @@ class LeadController extends Controller
 
         $sql         = preg_replace('/AND/', '', $sql, 1);
 
-        $cleads        = Lead::whereRaw($sql)->orderBy('created_at','desc')
-                                            ->get();
-
-        $ctrashes      = Lead::whereRaw($sql)->onlyTrashed()
-                                            ->orderBy('created_at','desc')
-                                            ->get();
-
 
         $data = [];
 
 
 
-        if(isset($request->type) && $request->type == 'trash') {
-            foreach ($ctrashes as $trash) {
-                $trash->Supplier;
-                $trash->AdminStatus;
-                $trash->CallerStatus;
-                $data[] = $trash;
-            }
+            $cleads        = Lead::whereRaw($sql)->orderBy('created_at','desc')
+                                                 ->get();
 
-        }else{
             foreach ($cleads as $lead){
                 $lead->Supplier;
                 $lead->AdminStatus;
                 $lead->CallerStatus;
                 $data[]  = $lead;
             }
-        }
+
 
         $requesd = [
             'fromDate' => $request->fromDate,
@@ -94,56 +79,44 @@ class LeadController extends Controller
 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
+
+
+
+
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+
+
+
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
+
+
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
+
+
     public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
+
+
+
     public function update(Request $request, $id)
     {
         $lead = Lead::find($id);
@@ -160,16 +133,12 @@ class LeadController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
+
 
 
     public function destroy($id)
-    {
+    {/*
         $lead = Lead::withTrashed()->find($id);
 
         if($lead->trashed()){
@@ -181,42 +150,9 @@ class LeadController extends Controller
         return response()->json([
             'status' => true,
             'id' => $id
-        ]);
+        ]);*/
     }
 
-
-
-    public function restoreSingle($id){
-
-        Lead::withTrashed()->find($id)
-            ->restore();
-
-        return response()->json([
-            'status' => true,
-            'id' => $id
-        ]);
-    }
-
-
-
-    public function restoreSelected($ids){
-
-        Lead::withTrashed()->whereIn($ids)
-            ->restore();
-
-        return redirect()->back()
-            ->with('status','Selected User Successfully Restored');
-    }
-
-
-
-    public function restoreAll(){
-
-        Lead::withTrashed()->restore();
-
-        return redirect()->back()
-            ->with('status','User Successfully Restored.');
-    }
 
 
 
@@ -231,6 +167,7 @@ class LeadController extends Controller
             'lead_status' => $status
         ]);
     }
+
 
     public function editNote(Request $request){
 
@@ -254,6 +191,8 @@ class LeadController extends Controller
     }
 
 
+
+
     public function sendTask(Request $request){
 
         if((!isset($request->callerId) ||$request->callerId == null || $request->callerId == '')
@@ -273,4 +212,6 @@ class LeadController extends Controller
             'task' => $request->task
         ]);
     }
+
+
 }

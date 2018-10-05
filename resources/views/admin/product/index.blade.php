@@ -64,6 +64,8 @@
     <script>
         $(document).ready(function() {
             $('#example').DataTable({
+                destroy: true,
+                bDestroy: true,
                 "ordering": false,
                 "info":     false,
                 "lengthChange": false

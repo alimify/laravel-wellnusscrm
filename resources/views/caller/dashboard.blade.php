@@ -31,17 +31,13 @@
         <main role="main" class="col-12 px-4">
             @include('layouts.admin.partials.notice')
 
-            @if($leads->count())
-                <h2>Leads ({{$leads->count()}})</a></h2>
+                <h2>Leads</h2>
 
                     <div class="table-responsive">
                         <table id="example" class="table table-striped table-bordered" style="width:100%">
                         </table>
                     </div>
 
-            @else
-                <div class="text-warning text-center">No data available.</div>
-        @endif
 
         <!-- Modal -->
             <div class="modal fade" id="noteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
@@ -149,13 +145,15 @@
                    order_id: item.order_id,
                    note: `${item.note ? item.note+'<br/>' : ''}<a href="javascript:void(0)" class="note-modal text-center" data-id="${item.id}" data-content="${item.note}"><i class="fa fa-plus"></i></a>`,
                    status:`<span class="${item.caller_status.class}">${item.caller_status.title}</span>`,
-                   action:`<a title="Confirm" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="1"><i class="fa fa-check" aria-hidden="true"></i></a><a title="Cancel" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="2"><i class="fa fa-times-circle" aria-hidden="true"></i></a><a title="Hold" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="3"><i class="fa fa-pause" aria-hidden="true"></i></a>`
+                   action:`<a title="Confirm" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="1"><i class="fa fa-check" aria-hidden="true"></i></a><a title="Cancel" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="2"><i class="fa fa-times-circle" aria-hidden="true"></i></a><a title="Hold" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="3"><i class="fa fa-pause" aria-hidden="true"></i></a><a title="Trash" href="javascript:void(0)" class="status-item ml-1" data-id="${item.id}" data-status="4"><i class="fa fa-trash" aria-hidden="true"></i></a>`
                })
             })
 
 
             $('#example').DataTable({
                 data: data,
+                destroy: true,
+                bDestroy: true,
                 columns:[
                     {title:'Product ID',data:'product_id'},
                     {title:'Order ID',data:'order_id'},
@@ -187,7 +185,7 @@
             const json = JSON.parse(a.target.responseText);
 
             if(json.status){
-                $("#example").DataTable().destroy()
+            
                 getURL(taskURL,printTaskTable,errorMSG,errorMSG)
             }
         },
@@ -196,7 +194,7 @@
             const json = JSON.parse(a.target.responseText);
 
             if(json.status){
-                $("#example").DataTable().destroy()
+                
                 getURL(taskURL,printTaskTable,errorMSG,errorMSG)
             }
         },addressEdit = function (a) {
@@ -204,7 +202,7 @@
                 const json = JSON.parse(a.target.responseText);
 
                 if(json.status){
-                    $("#example").DataTable().destroy()
+                    
                     getURL(taskURL,printTaskTable,errorMSG,errorMSG)
                 }
             };
