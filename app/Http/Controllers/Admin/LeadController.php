@@ -6,8 +6,10 @@ use App\Models\Lead;
 use App\Models\Role;
 use App\Models\Task;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class LeadController extends Controller
 {
@@ -18,11 +20,78 @@ class LeadController extends Controller
      */
     public function index()
     {
-        $leads = Lead::all();
-        $trashes = Lead::onlyTrashed()->get();
-        $callers = Role::find(2)->Users;
 
-        return response()->view('admin.lead.index',compact('leads','trashes','callers'));
+        $callers = User::where('role_id',2)->get();
+
+        return response()->view('admin.lead.index',compact('callers'));
+    }
+
+
+    public function indexAjax(Request $request){
+
+        $fromDate    = $request->fromDate;
+        $toDate      = $request->toDate;
+        $phone       = $request->phone;
+        $order_id    = $request->order_id;
+        $name        = $request->name;
+        $status      = $request->status;
+
+        $between     = ($fromDate != '' && $toDate != '') || ($fromDate != null && $toDate != null )
+                       ? " AND created_at BETWEEN 
+                       '".Carbon::createFromFormat('d-m-Y',$fromDate)->toDateTimeString()."'
+                       AND '".Carbon::createFromFormat('d-m-Y',$toDate)->toDateTimeString()."'" : '';
+
+        $phone       = $phone != '' || $phone != null ? " AND phone = '".$phone."'": '';
+        $order_id    = $order_id != '' || $order_id != null ? " AND phone = '".$order_id."'": '';
+        $name        = $name != '' || $name != null ? " AND name = '".$name."'": '';
+        $status       = $status != '' || $status != null ? " AND status_admin = $status": '';
+
+        $sql         = "$between$phone$order_id$name$status";
+
+        $sql         = preg_replace('/AND/', '', $sql, 1);
+
+        $cleads        = Lead::whereRaw($sql)->orderBy('created_at','desc')
+                                            ->get();
+
+        $ctrashes      = Lead::whereRaw($sql)->onlyTrashed()
+                                            ->orderBy('created_at','desc')
+                                            ->get();
+
+
+        $data = [];
+
+
+
+        if(isset($request->type) && $request->type == 'trash') {
+            foreach ($ctrashes as $trash) {
+                $trash->Supplier;
+                $trash->AdminStatus;
+                $trash->CallerStatus;
+                $data[] = $trash;
+            }
+
+        }else{
+            foreach ($cleads as $lead){
+                $lead->Supplier;
+                $lead->AdminStatus;
+                $lead->CallerStatus;
+                $data[]  = $lead;
+            }
+        }
+
+        $requesd = [
+            'fromDate' => $request->fromDate,
+            'toDate' => $request->toDate,
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'order_id' => $request->order_id,
+        ];
+
+        return response()->json([
+            'request' => $requesd ,
+            'data'    => $data,
+        ]);
+
     }
 
     /**
@@ -146,16 +215,24 @@ class LeadController extends Controller
     }
 
     public function editNote(Request $request){
-        $this->validate($request,[
-          'id' => 'required'
-        ]);
+
+        if(!isset($request->id) || $request->id == null){
+            return response()->json([
+                'status' => false,
+                'id'     => $request->id,
+                'note'   => $request->note
+            ]);
+        }
 
         $lead = Lead::find($request->id);
         $lead->note = $request->note;
         $lead->save();
 
-        return redirect()->back()
-                          ->with('status','Lead Note Updated..');
+        return response()->json([
+            'status' => true,
+            'id' => $request->id,
+            'note' => $request->note
+        ]);
     }
 
 

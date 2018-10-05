@@ -3,78 +3,37 @@
 @section('title','Leads')
 
 @push('css')
-
-
+    <link rel="stylesheet" href="{{asset('css/admin/jquery.ui.css')}}">
+<style>
+    input[readonly="readonly"] {
+        border:0px;
+    }
+</style>
 @endpush
 
+@php
+    $fromDate = \Carbon\Carbon::now()->startOfMonth()->format('d-m-Y');
+    $toDate = \Carbon\Carbon::now()->format('d-m-Y');
+@endphp
 
 @section('content')
 
-    @if($leads->count() || $trashes->count())
-        <h2>Leads</a></h2>
-        <a href="{{route('admin.lead.index')}}">Leads ({{$leads->count()}})</a>
-        - <a href="{{route('admin.lead.index',['type' => 'trash'])}}">Trash ({{$trashes->count()}})</a>
+        <h2>Leads</h2>
+        <a href="javascript:void(0)" id="view-leads">Leads </a>
+        - <a href="javascript:void(0)" id="view-hold">Hold </a>
+        - <a href="javascript:void(0)" id="view-confirm">Confirm </a>
+        - <a href="javascript:void(0)" id="view-cancelled">Cancelled </a>
+        - <a href="javascript:void(0)" id="view-trash">Trash </a>
         - <a href="{{route('admin.lead.restore.all')}}">Restore All</a>
-<form method="POST" action="{{route('admin.lead.sendTask')}}">
-    @csrf
-    @method("POST")
+
+        <div class="filtering form-inline justify-content-center">
+            <input type="text" class="form-control col-xs-10 col-sm-2 m-1" id="fromDate" value="{{$fromDate}}">
+            <input type="text" class="form-control col-xs-10 col-sm-2 m-1" id="toDate" value="{{$toDate}}">
+            </select>
+        </div>
+
         <div class="table-responsive">
             <table id="example" class="table table-striped table-bordered" style="width:100%">
-                <thead>
-                <tr>
-                    <th></th>
-                    <th>#</th>
-                    <th>Product ID</th>
-                    <th>Product Code</th>
-                    <th>DateTime</th>
-                    <th>Supplier</th>
-                    <th>Customer</th>
-                    <th>Phone</th>
-                    <th>Email</th>
-                    <th>Address</th>
-                    <th>Order Id</th>
-                    <th>Status Admin</th>
-                    <th>Status Caller</th>
-                    <th>Note</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
-                <tbody>
-
-                @foreach((isset($_REQUEST['type']) && $_REQUEST['type'] == 'trash' ? $trashes : $leads) as $lead)
-                    <tr>
-                        <td><input type="checkbox" name="task[]" value="{{$lead->id}}"></td>
-                        <td>{{$lead->id}}</td>
-                        <td>{{$lead->product_id}}</td>
-                        <td>{{$lead->Product->code}}</td>
-                        <td>{{$lead->created_at}}</td>
-                        <td>{{$lead->Supplier->name}}</td>
-                        <td>{{$lead->name}}</td>
-                        <td>{{$lead->phone}}</td>
-                        <td>{{$lead->email}}</td>
-                        <td>{{$lead->address}}</td>
-                        <td>{{$lead->order_id}}</td>
-                        <td><span class="{{$lead->AdminStatus->class}}">{{$lead->AdminStatus->title}}</span></td>
-                        <td><span class="{{$lead->CallerStatus->class}}">{{$lead->CallerStatus->title}}</span></td>
-                        <td>{{$lead->note}}<br/><a href="javascript:void(0)" data-src="{{$lead->id}}" data-content="{{$lead->note}}" class="text-center note-modal" data-toggle="modal" data-target="#noteModal"><i class="fa fa-plus"></i></a></td>
-                        <td>
-                            @if(isset($_REQUEST['type']) && $_REQUEST['type'] == 'trash')
-
-                                <a href="{{route('admin.lead.restore.single',$lead->id)}}" class="restore-item" data-src="{{$lead->id}}"><i class="fa fa-undo" aria-hidden="true"></i></a>
-
-                            @else
-
-                                <a href="{{ route('admin.lead.status',['id' => $lead->id, 'status' => 1]) }}"><i class="fa fa-check" aria-hidden="true"></i></a>
-                                <a href="{{ route('admin.lead.status',['id' => $lead->id, 'status' => 2]) }}"><i class="fa fa-times-circle" aria-hidden="true"></i></a>
-                                <a href="{{ route('admin.lead.status',['id' => $lead->id, 'status' => 3]) }}"><i class="fa fa-pause" aria-hidden="true"></i></a>
-
-                            @endif
-
-                            <a href="javascript:void(0)" class="delete-item" data-src="{{$lead->id}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
-                        </td>
-                    </tr>
-                @endforeach
-                </tbody>
             </table>
         </div>
     <div class="justify-content-center form-inline">
@@ -85,16 +44,12 @@
     </select>
     <input type="submit" name="submit" value="Submit" class="btn btn-primary btn-success form-inline">
     </div>
-</form>
-    @else
-        <div class="text-warning text-center">No data available.</div>
-    @endif
+
 
     <!-- Modal -->
     <div class="modal fade" id="noteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <form action="{{route('admin.lead.note.edit')}}" method="POST">
                 <div class="modal-header">
                     <h5 class="modal-title" id="noteModalLabel">Note</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -102,17 +57,14 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                        @csrf
-                        @method('POST')
                         <input id="modal-note-id" type="hidden" name="id">
-                       <textarea class="form-control" id="modal-note" name="note"></textarea>
+                         <textarea class="form-control" id="modal-note" name="note"></textarea>
 
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" name="submit" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-primary" id="submit-note-modal">Save changes</button>
                 </div>
-                </form>
             </div>
         </div>
     </div>
@@ -120,14 +72,139 @@
 
 
 @push('script')
+<script src="{{asset('js/admin/jquery.ui.min.js')}}"></script>
     <script>
         $(document).ready(function() {
+            const on = (a, b = false) => {
+                    return b ? document.querySelectorAll(a) : document.querySelector(a)
+                },
+                listen = (a, b, c , d = true) => {
+                    b.length && d ? b.forEach(e => { e.addEventListener(a, c) }) : b.addEventListener(a, c)
+                    return
+                },
+                domStyle = (a,b = false) =>{
+                    let c = on(a).style
+                    return b ? (c.cssText = b,c) : c
+                },
+                domValue = (a,b = false) => {
+                    let c = on(a)
+                    return b ? (c.value = b,c.value) : c.value
+                },
+                domHTML = (a,b = false) => {
+                    let c = on(a)
+                    return b ? (c.innerHTML = b,c.innerHTML) : c.innerHTML
+                },
+                session = (a,b = false,c = false) => {
+                    return a && !b && !c ? JSON.parse(sessionStorage.getItem(a))  : a && b && !c ? (sessionStorage.setItem(a, JSON.stringify(b)),true) : a && c && !b ?  (sessionStorage.removeItem(a),true) : false
+                };
+
+
+        function getURL(url,load,error,abort,data = {}){
+            let ajax,
+                formdata = new FormData();
+            formdata.append('_token','{{csrf_token()}}')
+
+            Object.keys(data).forEach(function (item) {
+             formdata.append(item,data[item])
+            })
+
+            try {
+                ajax = new XMLHttpRequest();
+            } catch (t) {
+                try {
+                    ajax = new ActiveXObject("Msxml2.XMLHTTP");
+                } catch (t) {
+                    try {
+                        ajax = new ActiveXObject("Microsoft.XMLHTTP");
+                    } catch (t) {
+                        console.log("Something error....");
+                    }
+                }
+            }
+
+            listen("load", ajax, load);
+            listen("error", ajax, error);
+            listen("abort", ajax, abort);
+            ajax.open("POST", url);
+            ajax.send(formdata);
+        }
+
+
+        function printLeadTable(a){
+                console.log(a.target.responseText)
+            const json = JSON.parse(a.target.responseText),
+                   data = [];
+            json.data.forEach(function (item) {
+                data.push({
+                    checkbox: `<input type="checkbox" value="${item.id}" class="select_item">`,
+                    id: item.id,
+                    product_serial: item.proudct_serial,
+                    supplier_serial: item.supplier_serial,
+                    product_id: item.product_id,
+                    supplier_id: item.supplier_id,
+                    supplier_name: item.supplier.name,
+                    name: `${item.name ? item.name : ''}`,
+                    phone: `${item.phone ? item.phone : ''}`,
+                    email: `${item.email ? item.email : ''}`,
+                    address: `${item.address ? item.address : ''}`,
+                    note: `${item.note}<br/><a href="javascript:void(0)" class="note-modal" data-id="${item.id}" data-content="${item.note}"><i class="fa fa-plus"></i></a>`,
+                    order_id: item.order_id,
+                    publisher_id: item.publisher_id,
+                    status_admin: `<span class="${item.admin_status.class}">${item.admin_status.title}</span>`,
+                    status_caller: `<span class="${item.caller_status.class}">${item.caller_status.title}</span>`,
+                    created_at: item.created_at,
+                    action: `<a title="Confirm" href="javascript:void(0)" class="ml-1"><i class="fa fa-check" aria-hidden="true"></i></a><a title="Cancel" href="javascript:void(0)" class="ml-1"><i class="fa fa-times-circle" aria-hidden="true"></i></a><a title="Hold" href="javascript:void(0)" class="ml-1"><i class="fa fa-pause" aria-hidden="true"></i></a><a title="Edit" href="javascript:void(0)" class="ml-1"><i class="fa fa-edit" aria-hidden="true"></i></a><a title="Trash" href="javascript:void(0)" class="delete-item ml-1" data-src="5"><i class="fa fa-trash" aria-hidden="true"></i></a>`
+                });
+            })
+
             $('#example').DataTable({
-                "ordering": false,
-                "info":     false,
-                "lengthChange": false
+                 data: data,
+                 columns:[
+                     {title:'',data:'checkbox'},
+                     {title:'Product ID',data:'product_id'},
+                     {title:'Order ID',data:'order_id'},
+                     {title:'DateTime',data:'created_at'},
+                     {title:'Supplier',data:'supplier_name'},
+                     {title:'Customer',data:'name'},
+                     {title:'Phone',data:'phone'},
+                     {title:'Email',data:'email'},
+                     {title:'Address',data:'address'},
+                     {title:'Status Admin',data:'status_admin'},
+                     {title:'Status Caller',data:'status_caller'},
+                     {title:'Note',data:'note'},
+                     {title:'Action',data:'action'},
+                 ],
+                 //ordering: false,
+                 info:     false,
+                 lengthChange: false,
+                 order: [[ 3, "desc" ]],
+                columnDefs: [
+                    { targets: 12, orderable: false, searchable: false },
+                    { targets: 0, orderable: false, searchable: false, }
+                ]
             });
 
+        }
+
+        function errorMsg(){
+            console.log('an error')
+        }
+
+        var appURL = '{{route('index')}}',
+               leadURI = '{{route('admin.lead.ajax')}}',
+               leadURL = leadURI.replace(appURL,''),
+               gType = false,
+               gStatus = false,
+               finalLeadURL = function(status = false,type = false){
+                       gStatus = status
+                       status = status ? `&status=${status}` : false
+                       gType = type
+                       type = type ? `&type=${type}` : false;
+
+            return `${leadURL}?fromDate=${$("#fromDate").val()}&toDate=${$("#toDate").val()}${status ? status : ''}${type ? type : ''}`
+               };
+
+        getURL(finalLeadURL(),printLeadTable,errorMsg,errorMsg)
 
             $(".delete-item").click(function () {
 
@@ -149,12 +226,83 @@
                 deleteForm.submit()
             })
 
-            $(".note-modal").click(function () {
-                $("#modal-note-id").val(this.dataset.src)
+
+            function noteEdit(a){
+            console.log(a.target.responseText)
+                const data = JSON.parse(a.target.responseText);
+                $("#noteModal").modal('hide')
+                     if(data.status){
+                         $("#example").DataTable().destroy();
+                         getURL(finalLeadURL(gStatus,gType),printLeadTable,errorMsg,errorMsg)
+                     }else{
+                         errorMsg()
+                     }
+            }
+
+            $("body").on('click','.note-modal',function () {
+                $("#noteModal").modal('show')
+                $("#modal-note-id").val(this.dataset.id)
                 $("#modal-note").text(this.dataset.content)
             })
 
+            $("#submit-note-modal").click(function () {
 
+                const URL = `{{route('admin.lead.note.edit')}}`,
+                       finalURL = URL.replace(appURL,''),
+                       data = {
+                           id: $("#modal-note-id").val(),
+                           note: $("#modal-note").val()
+                       };
+
+
+               /* Object.keys(data).forEach(function (item) {
+                    console.log(data[item])
+                })*/
+                getURL(finalURL,noteEdit,errorMsg,errorMsg,data)
+
+
+
+            })
+
+            $("#fromDate").datepicker({ dateFormat: 'dd-mm-yy' })
+            $("#toDate").datepicker({ dateFormat: 'dd-mm-yy' })
+
+            $("#view-leads").click(function () {
+                $("#example").DataTable().destroy();
+                getURL(finalLeadURL(),printLeadTable,errorMsg,errorMsg)
+            })
+
+            $("#view-hold").click(function () {
+                $("#example").DataTable().destroy();
+                getURL(finalLeadURL(3),printLeadTable,errorMsg,errorMsg)
+            })
+
+
+            $("#view-cancelled").click(function () {
+                $("#example").DataTable().destroy();
+                getURL(finalLeadURL(2),printLeadTable,errorMsg,errorMsg)
+            })
+
+
+            $("#view-confirm").click(function () {
+                $("#example").DataTable().destroy();
+                getURL(finalLeadURL(1),printLeadTable,errorMsg,errorMsg)
+            })
+
+            $("#view-trash").click(function () {
+                $("#example").DataTable().destroy();
+                getURL(finalLeadURL(false,'trash'),printLeadTable,errorMsg,errorMsg)
+            })
+
+            $("#fromDate").change(function () {
+                $("#example").DataTable().destroy();
+                getURL(finalLeadURL(gStatus,gType),printLeadTable,errorMsg,errorMsg)
+            })
+
+            $("#toDate").change(function () {
+                $("#example").DataTable().destroy();
+                getURL(finalLeadURL(gStatus,gType),printLeadTable,errorMsg,errorMsg)
+            })
 
         } );
     </script>

@@ -15,6 +15,8 @@ class CreateLeadsTable extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('product_serial');
+            $table->integer('supplier_serial');
             $table->integer('product_id');
             $table->integer('supplier_id');
             $table->string('name');

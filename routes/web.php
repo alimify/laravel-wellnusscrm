@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('login');
-});
+})->name('index');
 
 Auth::routes();
 
@@ -50,6 +50,7 @@ Route::group(['as' => 'admin.','prefix' => 'admin','namespace' => 'Admin','middl
 
     /*Lead Routes*/
     Route::resource('lead','LeadController');
+
     Route::get('lead/status/{id}/{status}','LeadController@leadStatus')->name('lead.status');
     Route::get('lead/restore/all','LeadController@restoreAll')->name('lead.restore.all');
     Route::post('lead/restore','LeadController@restoreSelected')->name('lead.restore.selected');
@@ -57,6 +58,8 @@ Route::group(['as' => 'admin.','prefix' => 'admin','namespace' => 'Admin','middl
     Route::post('lead/note','LeadController@editNote')->name('lead.note.edit');
 
     Route::post('lead/sendTask','LeadController@sendTask')->name('lead.sendTask');
+
+    Route::any('lead/ajax/data','LeadController@indexAjax')->name('lead.ajax');
 });
 
 
