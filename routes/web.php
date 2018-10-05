@@ -39,7 +39,7 @@ Route::group(['as' => 'admin.','prefix' => 'admin','namespace' => 'Admin','middl
     Route::resource('product','ProductController');
     Route::get('product/restore/all','ProductController@restoreAll')->name('product.restore.all');
     Route::post('product/restore','ProductController@restoreSelected')->name('product.restore.selected');
-    Route::get('product/restore/{id}','ProductController@restoreSingle')->name('product.restore.single');
+    Route::any('product/restore/{id}','ProductController@restoreSingle')->name('product.restore.single');
 
     /*Supplier Routes*/
     Route::resource('supplier','SupplierController');
@@ -51,10 +51,10 @@ Route::group(['as' => 'admin.','prefix' => 'admin','namespace' => 'Admin','middl
     /*Lead Routes*/
     Route::resource('lead','LeadController');
 
-    Route::get('lead/status/{id}/{status}','LeadController@leadStatus')->name('lead.status');
+    Route::any('lead/status/{id}/{status}','LeadController@leadStatus')->name('lead.status');
     Route::get('lead/restore/all','LeadController@restoreAll')->name('lead.restore.all');
     Route::post('lead/restore','LeadController@restoreSelected')->name('lead.restore.selected');
-    Route::get('lead/restore/{id}','LeadController@restoreSingle')->name('lead.restore.single');
+    Route::any('lead/restore/{id}','LeadController@restoreSingle')->name('lead.restore.single');
     Route::post('lead/note','LeadController@editNote')->name('lead.note.edit');
 
     Route::post('lead/sendTask','LeadController@sendTask')->name('lead.sendTask');
@@ -68,8 +68,10 @@ Route::group(['as' => 'admin.','prefix' => 'admin','namespace' => 'Admin','middl
 Route::group(['as' => 'caller.','prefix' => 'caller','namespace' => 'Caller','middleware' => ['caller']],function() {
 
     Route::get('dashboard','DashboardController@index')->name('dashboard');
-    Route::post('lead/note','LeadController@editNote')->name('lead.note.edit');
-    Route::get('lead/status/{id}/{status}','LeadController@leadStatus')->name('lead.status');
+    Route::any('indexAjax','DashboardController@indexAjax')->name('lead.ajax.data');
+    Route::any('lead/note','LeadController@editNote')->name('lead.note.edit');
+    Route::any('lead/address','LeadController@editAddress')->name('lead.address.edit');
+    Route::any('lead/status/{id}/{status}','LeadController@leadStatus')->name('lead.status');
 
 });
 

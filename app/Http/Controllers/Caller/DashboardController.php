@@ -13,11 +13,25 @@ class DashboardController extends Controller
 
 
     public function index(){
-        $tasks = Task::where('user_id',Auth::id())->pluck('lead_id')
-                                                  ->toArray();
-        $leads = Lead::whereIn('id',$tasks)->get();
 
+        $leads = Auth::user()->callerTask;
         return response()->view('caller.dashboard',compact('leads'));
+    }
+
+    public function indexAjax(Request $request){
+
+        $gleads = Auth::user()->callerTask;
+        $leads = [];
+
+        foreach ($gleads as $glead){
+            $glead->CallerStatus;
+            $leads[] = $glead;
+        }
+
+        return response()->json([
+            'data' => $leads
+        ]);
+
     }
 
 

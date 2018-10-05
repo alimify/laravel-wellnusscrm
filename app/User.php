@@ -40,4 +40,7 @@ class User extends Authenticatable
         return $this->belongsTo('App\Models\Userextra');
     }
 
+    public function callerTask(){
+        return $this->hasMany('App\Models\Lead','caller_id','id')->where('status_caller',3);
+    }
 }

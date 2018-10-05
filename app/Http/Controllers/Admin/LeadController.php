@@ -3,8 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Lead;
-use App\Models\Role;
-use App\Models\Task;
+use App\Models\Status;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -22,8 +21,9 @@ class LeadController extends Controller
     {
 
         $callers = User::where('role_id',2)->get();
+        $statuses = Status::all();
 
-        return response()->view('admin.lead.index',compact('callers'));
+        return response()->view('admin.lead.index',compact('callers','statuses'));
     }
 
 
@@ -146,7 +146,18 @@ class LeadController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $lead = Lead::find($id);
+        $lead->name = $request->name;
+        $lead->phone = $request->phone;
+        $lead->email = $request->email;
+        $lead->address = $request->address;
+        $lead->status_caller = $request->caller_status;
+        $lead->save();
+
+        return response()->json([
+            'status' => true,
+            'id'  => $id
+        ]);
     }
 
     /**
@@ -167,8 +178,10 @@ class LeadController extends Controller
             $lead->delete();
         }
 
-        return redirect()->back()
-            ->with('status','User Deleted Successfully');
+        return response()->json([
+            'status' => true,
+            'id' => $id
+        ]);
     }
 
 
@@ -178,8 +191,10 @@ class LeadController extends Controller
         Lead::withTrashed()->find($id)
             ->restore();
 
-        return redirect()->back()
-            ->with('status','User Deleted Successfully');
+        return response()->json([
+            'status' => true,
+            'id' => $id
+        ]);
     }
 
 
@@ -210,8 +225,11 @@ class LeadController extends Controller
         $lead->status_admin = $status;
         $lead->save();
 
-        return redirect()->back()
-                          ->with('status','Lead Status Updated..');
+        return response()->json([
+            'status' => true,
+            'lead_id' =>  $id,
+            'lead_status' => $status
+        ]);
     }
 
     public function editNote(Request $request){
@@ -237,25 +255,22 @@ class LeadController extends Controller
 
 
     public function sendTask(Request $request){
-        $this->validate($request,[
-            'callerId' => 'required'
-        ]);
 
-        $user = User::find($request->callerId);
-
-
-        $task = [];
-
-        foreach ($request->task as $t){
-            $task[] = [
-                'user_id' => $request->callerId,
-                'lead_id' => $t
-            ];
+        if((!isset($request->callerId) ||$request->callerId == null || $request->callerId == '')
+        || (!isset($request->task) ||$request->task == null || $request->task == '' || !count($request->task))){
+            return response()->json([
+                'status' => false
+            ]);
         }
+        $tasks = explode(',',str_replace('"','',$request->task));
 
-        Task::insert($task);
 
-        return redirect()->back()
-                          ->with('status','Task Successfully Send to'.$user->name);
+        Lead::whereIn('id',$tasks)->update(['caller_id' => $request->callerId]);
+
+        return response()->json([
+            'status' => true,
+            'callerId' => $request->callerId,
+            'task' => $request->task
+        ]);
     }
 }

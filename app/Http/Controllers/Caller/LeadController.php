@@ -12,17 +12,45 @@ class LeadController extends Controller
 
 
     public function editNote(Request $request){
-        $this->validate($request,[
-            'id' => 'required'
-        ]);
+
+        if(!isset($request->id) || $request->id == null || $request->id == ''){
+
+            return response()->json([
+                'status' => false
+            ]);
+        }
 
         $lead = Lead::find($request->id);
         $lead->note = $request->note;
         $lead->save();
 
-        return redirect()->back()
-            ->with('status','Lead Note Updated..');
+        return response()->json([
+            'status' => true,
+            'id' => $lead->id,
+            'note' => $lead->note
+        ]);
     }
+
+    public function editAddress(Request $request){
+
+        if(!isset($request->id) || $request->id == null || $request->id == ''){
+
+            return response()->json([
+                'status' => false
+            ]);
+        }
+
+        $lead = Lead::find($request->id);
+        $lead->address = $request->address;
+        $lead->save();
+
+        return response()->json([
+            'status' => true,
+            'id' => $lead->id,
+            'address' => $lead->address
+        ]);
+    }
+
 
 
     public function leadStatus($id,$status){
@@ -30,8 +58,10 @@ class LeadController extends Controller
         $lead->status_caller = $status;
         $lead->save();
 
-        return redirect()->back()
-            ->with('status','Lead Status Updated..');
+        return response()->json([
+            'status' => true,
+            'id' => $lead->id
+        ]);
     }
 
 

@@ -118,7 +118,9 @@ class ApiController extends Controller
         $lead->supplier_serial              = ($supplier_serial->supplier_serial??0)+1;
         $lead->product_serial               = ($product_serial->product_serial??0)+1;
         $lead->note                         = '';
-
+        $lead->updated_at                   = null;
+        $lead->update_caller                = null;
+        $lead->update_admin                 = null;
         $lead->save();
 
         $data = [
@@ -133,7 +135,6 @@ class ApiController extends Controller
             'supplier_serial'               => $lead->supplier_serial,
             'product_serial'                => $lead->product_serial
         ];
-
 
         return response()->json([
 
