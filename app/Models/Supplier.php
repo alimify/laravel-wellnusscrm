@@ -10,4 +10,7 @@ class Supplier extends Model
     use SoftDeletes;
     protected $dates = ['deleted_at'];
 
+    public function Leads(){
+        return $this->hasMany('App\Models\Lead');
+    }
 }

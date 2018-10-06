@@ -17,7 +17,11 @@
 @endphp
 
 @section('content')
-
+    <div class="load-bar" id="load-bar" style="display: none;margin-top:-8px;">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
         <h2>Leads</h2>
         <a href="javascript:void(0)" id="view-leads">Leads </a>
         - <a href="javascript:void(0)" id="view-hold">Hold </a>
@@ -135,6 +139,9 @@
                 },
 
                 getURL = function(url,load,error,abort,data = {}){
+
+                /*Before Sending Ajax*/
+                 $("#load-bar").css('display','')
                 let ajax,
                     formdata = new FormData();
                 formdata.append('_token','{{csrf_token()}}')
@@ -160,6 +167,17 @@
                 listen("load", ajax, load);
                 listen("error", ajax, error);
                 listen("abort", ajax, abort);
+
+                listen("load", ajax, function () {
+                    $("#load-bar").css('display','none')
+                });
+                listen("error", ajax, function () {
+                    $("#load-bar").css('display','none')
+                });
+                listen("abort", ajax, function () {
+                    $("#load-bar").css('display','none')
+                });
+
                 ajax.open("POST", url);
                 ajax.send(formdata);
             },

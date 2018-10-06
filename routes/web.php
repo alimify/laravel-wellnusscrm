@@ -79,3 +79,4 @@ Route::group(['as' => 'caller.','prefix' => 'caller','namespace' => 'Caller','mi
 /*API ROUTES*/
 
 Route::any('api/order','Api\ApiController@Order')->name('api.order');
+Route::any('status.php','Api\ApiController@status')->name('status.php');

@@ -73,7 +73,27 @@ class SupplierController extends Controller
      */
     public function show($id)
     {
-        //
+        $supplier = Supplier::find($id);
+        $leadData = $supplier->Leads();
+        $leads    = $leadData->get();
+
+        $leadc      =    $leadData->select('leads.id','products.name')
+                                  ->join('products','products.id','=','leads.product_id')
+                                  ->get()
+                                  ->groupBy(function ($data){
+                                      return $data->name;
+                                  })
+
+        ;
+
+        $chart = [];
+        $chart[] = ['Products','Leads'];
+
+        foreach ($leadc as $s => $l){
+            $chart[] = [$s,count($l)];
+        }
+
+        return response()->view('admin.supplier.show',compact('supplier','chart','leads'));
     }
 
     /**

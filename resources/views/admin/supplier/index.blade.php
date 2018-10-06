@@ -40,14 +40,14 @@
                         <td>{{$supplier->email}}</td>
                         <td>{{$supplier->address}}</td>
                         <td>{{$supplier->note}}</td>
-                        <td class="text-center"><a href="javascript:void(0)" data-id="{{$supplier->id}}" data-key="{{$supplier->api}}" data-toggle="modal" data-target="#apiModal" id="apiInfo"><i class="fa fa-eye"></i></a></td>
+                        <td class="text-center"><a href="javascript:void(0)" data-id="{{$supplier->id}}" data-key="{{$supplier->api}}" data-toggle="modal" data-target="#apiModal" id="apiInfo"><i class="fa fa-eyedropper"></i></a></td>
                         <td>
                             @if(isset($_REQUEST['type']) && $_REQUEST['type'] == 'trash')
 
                                 <a href="{{route('admin.supplier.restore.single',$supplier->id)}}" class="restore-item" data-src="{{$supplier->id}}"><i class="fa fa-undo" aria-hidden="true"></i></a>
 
                             @else
-
+                                <a href="{{route('admin.supplier.show',$supplier->id)}}"><i class="fa fa-eye"></i></a>
                                 <a href="{{route('admin.supplier.edit',$supplier->id)}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                             @endif
 

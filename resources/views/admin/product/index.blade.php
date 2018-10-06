@@ -39,11 +39,10 @@
                         <td><img src="{{asset($product->image)}}"></td>
                         <td>
                             @if(isset($_REQUEST['type']) && $_REQUEST['type'] == 'trash')
-
                                 <a href="{{route('admin.product.restore.single',$product->id)}}" class="restore-item" data-src="{{$product->id}}"><i class="fa fa-undo" aria-hidden="true"></i></a>
 
                             @else
-
+                                <a href="{{route('admin.product.show',$product->id)}}"><i class="fa fa-eye"></i></a>
                                 <a href="{{route('admin.product.edit',$product->id)}}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
                             @endif
 

@@ -84,7 +84,27 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        //
+        $product = Product::find($id);
+        $leadData   =     $product->Leads();
+        $leads      =     $leadData->get();
+        $leadc      =    $leadData->select('leads.id','suppliers.name')
+                                  ->join('suppliers','suppliers.id','=','leads.supplier_id')
+                                  ->get()
+                                  ->groupBy(function ($data){
+                                      return $data->name;
+                                  })
+
+        ;
+
+        $chart = [];
+        $chart[] = ['Suppliers','Leads'];
+
+        foreach ($leadc as $s => $l){
+            $chart[] = [$s,count($l)];
+        }
+
+
+        return response()->view('admin.product.show',compact('product','chart','leads'));
     }
 
     /**

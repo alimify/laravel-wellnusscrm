@@ -145,4 +145,49 @@ class ApiController extends Controller
 
         ]);
     }
+
+
+
+    public function status(Request $request){
+
+        $ids = $request->ids;
+        $id = explode(',',$ids);
+
+        $leads = Lead::whereIn('order_id',$id);
+        $order_ids = $leads->pluck('order_id')->toArray();
+        $not_exist = array_diff($id,$order_ids);
+
+        $data = [];
+
+        foreach ($leads->get() as $lead){
+            $data[] = [
+                'order_id' => $lead->order_id,
+                'state'    => 'ok',
+                'status'   => $lead->AdminStatus->title,
+                'error'    => ''
+            ];
+        }
+
+
+    foreach ($not_exist as $nt) {
+        if($nt){
+
+        $data[] = [
+            'order_id' => $nt,
+            'state' => 'error',
+            'status' => '',
+            'error' => 'Error No:0'
+        ];
+
+        }
+    }
+
+        if(!isset($request->ids) || !(count($data) > 0)){
+            header("HTTP/1.0 400 Bad Request");
+        }else{
+            header("HTTP/1.0 200 OK");
+        }
+
+        return response()->json($data);
+    }
 }

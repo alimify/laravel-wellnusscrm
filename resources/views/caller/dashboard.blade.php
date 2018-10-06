@@ -27,12 +27,15 @@
 <div class="container-fluid justify-content-center mt-3">
     <div class="row">
 
-
         <main role="main" class="col-12 px-4">
             @include('layouts.admin.partials.notice')
+            <div class="load-bar" id="load-bar" style="display: none;margin-top: -8px;">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
 
                 <h2>Leads</h2>
-
                     <div class="table-responsive">
                         <table id="example" class="table table-striped table-bordered" style="width:100%">
                         </table>
@@ -100,6 +103,8 @@
             },
 
             getURL = function(url,load,error,abort,data = {}){
+                $("#load-bar").css('display','block')
+
                 let ajax,
                     formdata = new FormData();
                 formdata.append('_token','{{csrf_token()}}')
@@ -125,6 +130,19 @@
                 listen("load", ajax, load);
                 listen("error", ajax, error);
                 listen("abort", ajax, abort);
+
+
+                listen("load", ajax, function () {
+                    $("#load-bar").css('display','none')
+                });
+                listen("error", ajax, function () {
+                    $("#load-bar").css('display','none')
+                });
+                listen("abort", ajax, function () {
+                    $("#load-bar").css('display','none')
+                });
+
+
                 ajax.open("POST", url);
                 ajax.send(formdata);
             },
