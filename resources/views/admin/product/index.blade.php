@@ -21,7 +21,6 @@
                 <thead>
                 <tr>
                     <th>#ID</th>
-                    <th>Code</th>
                     <th>Name</th>
                     <th>Note</th>
                     <th>Image</th>
@@ -33,7 +32,6 @@
                 @foreach((isset($_REQUEST['type']) && $_REQUEST['type'] == 'trash' ? $trashes : $products) as $product)
                     <tr>
                         <td>{{$product->id}}</td>
-                        <td>{{$product->code}}</td>
                         <td>{{$product->name}}</td>
                         <td>{{$product->note}}</td>
                         <td><img src="{{asset($product->image)}}"></td>

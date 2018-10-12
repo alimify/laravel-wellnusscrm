@@ -17,7 +17,7 @@ class CreateLeadsTable extends Migration
             $table->increments('id');
             $table->integer('product_serial');
             $table->integer('supplier_serial');
-            $table->integer('product_id');
+            $table->string('product_id');
             $table->integer('supplier_id');
             $table->string('name');
             $table->string('phone');

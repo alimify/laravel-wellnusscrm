@@ -18,8 +18,8 @@
             @csrf
             @method('POST')
             <div class="form-group">
-                <label for="name">Code</label>
-                <input type="text" name="code" class="form-control" id="code" placeholder="Code">
+                <label for="id">ID</label>
+                <input type="text" name="id" class="form-control" id="id" placeholder="ID">
             </div>
 
             <div class="form-group">

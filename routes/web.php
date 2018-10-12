@@ -13,13 +13,12 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect()->route('login');
-})->name('index');
+Route::any('/','Api\ApiController@adcomboOrderIndex')->name('index');
+Route::any('/index.php','Api\ApiController@adcomboOrderIndex')->name('index.php');
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home', 'HomeController@home')->name('home');
 
 
 /*Admin Routes*/

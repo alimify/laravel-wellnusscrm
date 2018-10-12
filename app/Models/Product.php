@@ -9,7 +9,7 @@ class Product extends Model
 {
     use SoftDeletes;
     protected $dates = ['deleted_at'];
-
+    public $incrementing = false;
 
     public function Leads(){
         return $this->hasMany('App\Models\Lead');

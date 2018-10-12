@@ -195,7 +195,7 @@
                         supplier_serial: item.supplier_serial,
                         product_id: item.product_id+(!item.update_admin && !item.update_caller ? `<span class="ml-3 badge badge-danger">new</span>`:''),
                         supplier_id: item.supplier_id,
-                        supplier_name: item.supplier.name,
+                        supplier_name: item.supplier != null ? item.supplier.name : '',
                         name: `${item.name ? item.name : ''}`,
                         phone: `${item.phone ? item.phone : ''}`,
                         email: `${item.email ? item.email : ''}`,

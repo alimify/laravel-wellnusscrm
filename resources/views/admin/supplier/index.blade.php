@@ -40,7 +40,7 @@
                         <td>{{$supplier->email}}</td>
                         <td>{{$supplier->address}}</td>
                         <td>{{$supplier->note}}</td>
-                        <td class="text-center"><a href="javascript:void(0)" data-id="{{$supplier->id}}" data-key="{{$supplier->api}}" data-toggle="modal" data-target="#apiModal" id="apiInfo"><i class="fa fa-eyedropper"></i></a></td>
+                        <td class="text-center"><a href="javascript:void(0)" data-id="{{$supplier->id}}" data-key="{{$supplier->api}}" data-toggle="modal" data-target="#apiModal" id="apiInfo" class="apiInfo"><i class="fa fa-eyedropper"></i></a></td>
                         <td>
                             @if(isset($_REQUEST['type']) && $_REQUEST['type'] == 'trash')
 
@@ -135,7 +135,7 @@
                 deleteForm.submit()
             })
 
-            $("#apiInfo").click(function () {
+            $(".apiInfo").click(function () {
                 $("#modal-supplier-id").html(`<b>Supplier ID :</b><span class="ml-3">`+this.dataset.id+`</span>`)
                 $("#modal-api-key").html(`<b>API Key :<b><span class="ml-3">`+this.dataset.key+`</span>`)
             })

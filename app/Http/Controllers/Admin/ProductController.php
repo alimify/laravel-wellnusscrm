@@ -45,7 +45,8 @@ class ProductController extends Controller
     {
       $this->validate($request,[
           'name' => 'required|max:100',
-          'image' => 'mimes:jpg,png,bmp,gif,jpeg'
+          'image' => 'mimes:jpg,png,bmp,gif,jpeg',
+          'id'    => 'required|unique:products,id'
       ]);
 
       $image = $request->file('image');
@@ -65,7 +66,7 @@ class ProductController extends Controller
 
       $product = new Product();
       $product->user_id = Auth::check() ? Auth::id() : 0;
-      $product->code = $request->code;
+      $product->id = $request->id;
       $product->name = $request->name;
       $product->note = $request->note??'';
       $product->status = true;
@@ -131,7 +132,8 @@ class ProductController extends Controller
     {
         $this->validate($request,[
             'name' => 'required|max:100',
-            'image' => 'mimes:jpg,png,bmp,gif,jpeg'
+            'image' => 'mimes:jpg,png,bmp,gif,jpeg',
+            'id'    => 'required|unique:products,id'
         ]);
 
         $product = Product::find($id);
@@ -155,7 +157,7 @@ class ProductController extends Controller
         }
 
         $product->user_id = Auth::check() ? Auth::id() : 0;
-        $product->code = $request->code;
+        $product->id = $request->id;
         $product->name = $request->name;
         $product->note = $request->note??'';
         $product->status = true;

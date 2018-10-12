@@ -18,8 +18,8 @@
             @csrf
             @method('PUT')
             <div class="form-group">
-                <label for="name">Code</label>
-                <input type="text" name="code" class="form-control" id="code" value="{{$product->code}}">
+                <label for="id">ID</label>
+                <input type="text" name="id" class="form-control" id="id" value="{{$product->id}}">
             </div>
 
             <div class="form-group">

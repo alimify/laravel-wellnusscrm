@@ -135,7 +135,7 @@ class UserController extends Controller
         $phone->save();
 
         $user->save();
-        return redirect()->back()->with('status','User Successfully Created');
+        return redirect()->back()->with('status','User Successfully Updated');
     }
 
     /**

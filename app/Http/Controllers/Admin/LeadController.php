@@ -194,17 +194,22 @@ class LeadController extends Controller
 
 
     public function sendTask(Request $request){
-
+        $tasks = preg_replace("/\[([^\[\]]++|(?R))*+\]/", "", $request->task);
+        $tasks = explode(',',str_replace('"','',$tasks));
         if((!isset($request->callerId) ||$request->callerId == null || $request->callerId == '')
-        || (!isset($request->task) ||$request->task == null || $request->task == '' || !count($request->task))){
+        || (!isset($request->task) ||$request->task == null || $request->task == '' || !count($tasks))){
             return response()->json([
                 'status' => false
             ]);
         }
-        $tasks = explode(',',str_replace('"','',$request->task));
 
 
-        Lead::whereIn('id',$tasks)->update(['caller_id' => $request->callerId]);
+        Lead::whereIn('id',$tasks)->update([
+
+            'caller_id' => $request->callerId,
+            'update_admin' => Carbon::now()->toDateTimeString()
+
+        ]);
 
         return response()->json([
             'status' => true,

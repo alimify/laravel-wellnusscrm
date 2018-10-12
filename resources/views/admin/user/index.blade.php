@@ -69,7 +69,7 @@
             "ordering": false,
             "info":     false,
             "lengthChange": false
-        }).fnDestroy();
+        });
 
 
         $(".delete-item").click(function () {
