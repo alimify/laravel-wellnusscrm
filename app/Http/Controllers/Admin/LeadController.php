@@ -58,6 +58,7 @@ class LeadController extends Controller
 
             foreach ($cleads as $lead){
                 $lead->Supplier;
+                $lead->Product;
                 $lead->AdminStatus;
                 $lead->CallerStatus;
                 $data[]  = $lead;

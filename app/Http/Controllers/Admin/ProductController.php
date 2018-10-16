@@ -133,7 +133,7 @@ class ProductController extends Controller
         $this->validate($request,[
             'name' => 'required|max:100',
             'image' => 'mimes:jpg,png,bmp,gif,jpeg',
-            'id'    => 'required|unique:products,id'
+            'id'    => 'required|unique:products,id,'.$id
         ]);
 
         $product = Product::find($id);

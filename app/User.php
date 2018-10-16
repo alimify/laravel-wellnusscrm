@@ -41,6 +41,6 @@ class User extends Authenticatable
     }
 
     public function callerTask(){
-        return $this->hasMany('App\Models\Lead','caller_id','id')->where('status_caller',3);
+        return $this->hasMany('App\Models\Lead','caller_id','id')->orWhereNotNull('update_caller');
     }
 }

@@ -18,9 +18,13 @@
 
     <!-- Custom styles for this template -->
     <link href="{{asset('css/admin/dashboard.css')}}" rel="stylesheet">
+    <link rel="stylesheet" href="{{asset('css/admin/jquery.ui.css')}}">
 
 </head>
-
+@php
+    $fromDate = \Carbon\Carbon::now()->startOfMonth()->format('d-m-Y');
+    $toDate = \Carbon\Carbon::now()->format('d-m-Y');
+@endphp
 <body>
 @include('layouts.admin.partials.topbar')
 
@@ -36,6 +40,19 @@
             </div>
 
                 <h2>Leads</h2>
+              <a href="javascript:void(0)" id="view-leads">Leads </a>
+            - <a href="javascript:void(0)" id="view-hold">Hold </a>
+            - <a href="javascript:void(0)" id="view-confirm">Confirm </a>
+            - <a href="javascript:void(0)" id="view-cancelled">Cancelled </a>
+            - <a href="javascript:void(0)" id="view-trash">Trash </a>
+        <!--- <a href="{{route('admin.lead.restore.all')}}">Restore All</a>-->
+
+            <div class="filtering form-inline justify-content-center">
+                <input type="text" class="form-control col-xs-10 col-sm-2 m-1" id="fromDate" value="{{$fromDate}}">
+                <input type="text" class="form-control col-xs-10 col-sm-2 m-1" id="toDate" value="{{$toDate}}">
+                </select>
+            </div>
+
                     <div class="table-responsive">
                         <table id="example" class="table table-striped table-bordered" style="width:100%">
                         </table>
@@ -95,6 +112,8 @@
 
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
+<script src="{{asset('js/admin/jquery.ui.min.js')}}"></script>
+
 <script>
     $(document).ready(function() {
         const  listen = (a, b, c , d = true) => {
@@ -104,6 +123,7 @@
 
             getURL = function(url,load,error,abort,data = {}){
                 $("#load-bar").css('display','block')
+                console.log(url)
 
                 let ajax,
                     formdata = new FormData();
@@ -154,11 +174,11 @@
             json.data.forEach(function (item) {
                data.push({
                    id:item.id,
-                   product_id: item.product_id+(!item.update_caller ? `<span class="ml-3 badge badge-danger">new</span>`:''),
+                   product: (item.product_id ? item.product.name : '')+(!item.update_caller ? `<span class="ml-3 badge badge-danger">new</span>`:''),
                    created_at: item.created_at,
                    name: item.name,
                    phone: item.phone,
-                   email: item.email,
+                   //email: item.email,
                    address: `${item.address ? item.address+'<br/>' : ''}<a href="javascript:void(0)" class="address-modal text-center" data-id="${item.id}" data-content="${item.address?item.address:''}"><i class="fa fa-plus"></i></a>`,
                    order_id: item.order_id,
                    note: `${item.note ? item.note+'<br/>' : ''}<a href="javascript:void(0)" class="note-modal text-center" data-id="${item.id}" data-content="${item.note}"><i class="fa fa-plus"></i></a>`,
@@ -173,12 +193,12 @@
                 destroy: true,
                 bDestroy: true,
                 columns:[
-                    {title:'Product ID',data:'product_id'},
+                    {title:'Product',data:'product'},
                     {title:'Order ID',data:'order_id'},
                     {title:'DateTime',data:'created_at'},
                     {title:'Customer',data:'name'},
                     {title:'Phone',data:'phone'},
-                    {title:'Email',data:'email'},
+                    //{title:'Email',data:'email'},
                     {title:'Address',data:'address'},
                     {title:'Status',data:'status'},
                     {title:'Note',data:'note'},
@@ -189,7 +209,7 @@
                 lengthChange: false,
                 order: [[ 2, "desc" ]],
                 columnDefs: [
-                    { targets: 9, orderable: false, searchable: false },
+                    { targets: 8, orderable: false, searchable: false },
                     { targets: 0, orderable: false, searchable: false, }
                 ]
             });
@@ -204,7 +224,7 @@
 
             if(json.status){
             
-                getURL(taskURL,printTaskTable,errorMSG,errorMSG)
+                getURL(finalTaskURL(gStatus),printTaskTable,errorMSG,errorMSG)
             }
         },
         noteEdit = function (a) {
@@ -213,7 +233,7 @@
 
             if(json.status){
                 
-                getURL(taskURL,printTaskTable,errorMSG,errorMSG)
+                getURL(finalTaskURL(gStatus),printTaskTable,errorMSG,errorMSG)
             }
         },addressEdit = function (a) {
                 console.log(a.target.responseText)
@@ -221,15 +241,21 @@
 
                 if(json.status){
                     
-                    getURL(taskURL,printTaskTable,errorMSG,errorMSG)
+                    getURL(finalTaskURL(gStatus),printTaskTable,errorMSG,errorMSG)
                 }
             };
 
 
         var    appURL = '{{route('index')}}',
-                taskURL = `{{route('caller.lead.ajax.data')}}`.replace(appURL,'');
+                taskURL = `{{route('caller.lead.ajax.data')}}`.replace(appURL,''),
+                gStatus = false,
+                finalTaskURL = function (status = false) {
+                    gStatus = status
+                    status = status ? '&status='+status : false
+                     return `${taskURL}?fromDate=${$("#fromDate").val()}&toDate=${$("#toDate").val()}${status ? status : ''}`
+                };
 
-                getURL(taskURL,printTaskTable,errorMSG,errorMSG)
+                getURL(finalTaskURL(),printTaskTable,errorMSG,errorMSG)
 
 
         $("body").on('click','.status-item',function () {
@@ -275,6 +301,39 @@
             $("#addressModal").modal('hide')
         })
 
+        $("#view-leads").click(function () {
+            getURL(finalTaskURL(false),printTaskTable,errorMSG,errorMSG)
+        })
+
+        $("#view-hold").click(function () {
+            getURL(finalTaskURL(3),printTaskTable,errorMSG,errorMSG)
+        })
+
+        $("#view-confirm").click(function () {
+            getURL(finalTaskURL(1),printTaskTable,errorMSG,errorMSG)
+        })
+
+        $("#view-cancelled").click(function () {
+            getURL(finalTaskURL(2),printTaskTable,errorMSG,errorMSG)
+
+        })
+
+        $("#view-trash").click(function () {
+            getURL(finalTaskURL(4),printTaskTable,errorMSG,errorMSG)
+        })
+
+
+        $("#fromDate").datepicker({ dateFormat: 'dd-mm-yy' })
+        $("#toDate").datepicker({ dateFormat: 'dd-mm-yy' })
+
+
+        $("#fromDate").change(function () {
+            getURL(finalTaskURL(gStatus),printTaskTable,errorMSG,errorMSG)
+        })
+
+        $("#toDate").change(function () {
+            getURL(finalTaskURL(gStatus),printTaskTable,errorMSG,errorMSG)
+        })
     })
 </script>
 

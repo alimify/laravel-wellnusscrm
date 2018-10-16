@@ -193,12 +193,12 @@
                         id: item.id,
                         product_serial: item.proudct_serial,
                         supplier_serial: item.supplier_serial,
-                        product_id: item.product_id+(!item.update_admin && !item.update_caller ? `<span class="ml-3 badge badge-danger">new</span>`:''),
+                        product: (item.product_id ? item.product.name : '')+(!item.update_admin && !item.update_caller ? `<span class="ml-3 badge badge-danger">new</span>`:''),
                         supplier_id: item.supplier_id,
                         supplier_name: item.supplier != null ? item.supplier.name : '',
                         name: `${item.name ? item.name : ''}`,
                         phone: `${item.phone ? item.phone : ''}`,
-                        email: `${item.email ? item.email : ''}`,
+                        //email: `${item.email ? item.email : ''}`,
                         address: `${item.address ? item.address : ''}`,
                         note: `${item.note}<br/><a href="javascript:void(0)" class="note-modal" data-id="${item.id}" data-content="${item.note}"><i class="fa fa-plus"></i></a>`,
                         order_id: item.order_id,
@@ -216,13 +216,13 @@
                     data: data,
                     columns:[
                         {title:'',data:'checkbox'},
-                        {title:'Product ID',data:'product_id'},
+                        {title:'Product',data:'product'},
                         {title:'Order ID',data:'order_id'},
                         {title:'DateTime',data:'created_at'},
                         {title:'Supplier',data:'supplier_name'},
                         {title:'Customer',data:'name'},
                         {title:'Phone',data:'phone'},
-                        {title:'Email',data:'email'},
+                        //{title:'Email',data:'email'},
                         {title:'Address',data:'address'},
                         {title:'Status Admin',data:'status_admin'},
                         {title:'Status Caller',data:'status_caller'},
@@ -234,7 +234,7 @@
                     lengthChange: false,
                     order: [[ 3, "desc" ]],
                     columnDefs: [
-                        { targets: 12, orderable: false, searchable: false },
+                        { targets: 11, orderable: false, searchable: false },
                         { targets: 0, orderable: false, searchable: false, }
                     ]
                 });

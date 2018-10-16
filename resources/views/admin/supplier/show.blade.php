@@ -39,8 +39,8 @@
                 <td>{{$lead->phone}}</td>
                 <td>{{$lead->email}}</td>
                 <td>{{$lead->address}}</td>
-                <td><span class="{{$lead->AdminStatus->class}}">{{$lead->AdminStatus->title}}</span></td>
-                <td><span class="{{$lead->CallerStatus->class}}">{{$lead->CallerStatus->title}}</span></td>
+                <td><span class="{{$lead->AdminStatus->class??''}}">{{$lead->AdminStatus->title??''}}</span></td>
+                <td><span class="{{$lead->CallerStatus->class??''}}">{{$lead->CallerStatus->title??''}}</span></td>
                 <td>{{$lead->note}}</td>
             </tr>
                 @endforeach
