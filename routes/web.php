@@ -11,7 +11,6 @@
 |
 */
 
-use Illuminate\Support\Facades\Route;
 
 Route::any('/','Api\ApiController@adcomboOrderIndex')->name('index');
 Route::any('/index.php','Api\ApiController@adcomboOrderIndex')->name('index.php');
@@ -26,6 +25,7 @@ Route::get('/home', 'HomeController@home')->name('home');
 Route::group(['as' => 'admin.','prefix' => 'admin','namespace' => 'Admin','middleware' => ['auth','admin']],function() {
 
     Route::get('dashboard','DashboardController@index')->name('dashboard');
+    Route::any('dashboard/ajax/data','DashboardController@indexAjax')->name('dashboard.ajax');
 
 
     /*User Routes*/

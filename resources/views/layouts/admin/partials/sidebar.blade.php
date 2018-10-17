@@ -2,27 +2,27 @@
     <div class="sidebar-sticky">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link active" href="{{route('admin.dashboard')}}">
+                <a class="nav-link {{Request::is('admin/dashboard*') ? 'active' : ''}}" href="{{route('admin.dashboard')}}">
                     <span data-feather="home"></span>
                     Dashboard <span class="sr-only">(current)</span>
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.product.index')}}">
+                <a class="nav-link {{Request::is('admin/product*') ? 'active' : ''}}" href="{{route('admin.product.index')}}">
                     <span data-feather="shopping-cart"></span>
                     Products
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.supplier.index')}}">
+                <a class="nav-link {{Request::is('admin/supplier*') ? 'active' : ''}}" href="{{route('admin.supplier.index')}}">
                     <span data-feather="users"></span>
                     Suppliers
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.lead.index')}}">
+                <a class="nav-link {{Request::is('admin/lead*') ? 'active' : ''}}" href="{{route('admin.lead.index')}}">
                     <span data-feather="file"></span>
                     Leads
                 </a>
@@ -35,14 +35,14 @@
                 </a>
             </li>-->
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.user.index')}}">
+                <a class="nav-link {{Request::is('admin/user*') ? 'active' : ''}}" href="{{route('admin.user.index')}}">
                     <span data-feather="layers"></span>
                     Users
                 </a>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="{{route('admin.user.index')}}">
+                <a class="nav-link {{Request::is('admin/activity*') ? 'active' : ''}}" href="{{route('admin.user.index')}}">
                     <span data-feather="activity"></span>
                     Activity
                 </a>

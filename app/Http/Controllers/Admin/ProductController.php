@@ -88,7 +88,7 @@ class ProductController extends Controller
         $product = Product::find($id);
         $leadData   =     $product->Leads();
         $leads      =     $leadData->get();
-        $leadc      =    $leadData->select('leads.id','suppliers.name')
+        $leadc      =     $leadData->select('leads.id','suppliers.name')
                                   ->join('suppliers','suppliers.id','=','leads.supplier_id')
                                   ->get()
                                   ->groupBy(function ($data){

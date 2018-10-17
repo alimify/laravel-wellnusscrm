@@ -36,8 +36,8 @@
             </select>
         </div>
 
-        <div class="table-responsive">
-            <table id="example" class="table table-striped table-bordered" style="width:100%">
+        <div class="table-responsive display no-wrap">
+            <table id="example" class="table table-striped table-bordered">
             </table>
         </div>
     <div class="justify-content-center form-inline mb-5 mt-3">
@@ -213,29 +213,30 @@
                 $('#example').DataTable({
                     destroy: true,
                     bDestroy: true,
+                    autoWidth: false,
                     data: data,
                     columns:[
-                        {title:'',data:'checkbox'},
-                        {title:'Product',data:'product'},
-                        {title:'Order ID',data:'order_id'},
-                        {title:'DateTime',data:'created_at'},
-                        {title:'Supplier',data:'supplier_name'},
-                        {title:'Customer',data:'name'},
-                        {title:'Phone',data:'phone'},
+                        {title:'',data:'checkbox',width:'20px'},
+                        {title:'Product',data:'product',width:'50px'},
+                        {title:'Order ID',data:'order_id',width:'50px'},
+                        {title:'DateTime',data:'created_at',width:'50px'},
+                        {title:'Supplier',data:'supplier_name',width:'50px'},
+                        {title:'Customer',data:'name',width:'50px'},
+                        {title:'Phone',data:'phone',width:'50px'},
                         //{title:'Email',data:'email'},
-                        {title:'Address',data:'address'},
-                        {title:'Status Admin',data:'status_admin'},
-                        {title:'Status Caller',data:'status_caller'},
-                        {title:'Note',data:'note'},
-                        {title:'Action',data:'action'},
+                        {title:'Address',data:'address',width:'80px'},
+                        {title:'Status Admin',data:'status_admin',width:'30px'},
+                        {title:'Status Caller',data:'status_caller',width:'30px'},
+                        {title:'Note',data:'note',width:'150px'},
+                        {title:'Action',data:'action',width:'50px'},
                     ],
                     //ordering: false,
                     info:     false,
                     lengthChange: false,
                     order: [[ 3, "desc" ]],
                     columnDefs: [
-                        { targets: 11, orderable: false, searchable: false },
-                        { targets: 0, orderable: false, searchable: false, }
+                        {targets: 11, orderable: false, searchable: false},
+                        { targets: [0], orderable: false, searchable: false},
                     ]
                 });
 
