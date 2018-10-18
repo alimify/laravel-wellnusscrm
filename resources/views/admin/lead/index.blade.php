@@ -4,11 +4,18 @@
 
 @push('css')
     <link rel="stylesheet" href="{{asset('css/admin/jquery.ui.css')}}">
-<style>
-    input[readonly="readonly"] {
-        border:0px;
-    }
-</style>
+    <style>
+        table.dataTable td{
+            padding: 2px!important;
+        }
+        table.dataTable th:nth-child(11),table.dataTable th:nth-child(12){
+            padding-left: 2px!important;
+            padding-right: 2px!important;
+        }
+        .btn-action {
+            font-size: 16px;
+        }
+    </style>
 @endpush
 
 @php
@@ -21,6 +28,12 @@
         <div class="bar"></div>
         <div class="bar"></div>
         <div class="bar"></div>
+    </div>
+    <div class="text-center">
+        <span class="btn btn-status-confirm"></span> Confirm
+        <span class="btn btn-status-cancel"></span> Cancel
+        <span class="btn btn-status-hold"></span> Hold
+        <span class="btn btn-status-trash"></span> Trash
     </div>
         <h2>Leads</h2>
         <a href="javascript:void(0)" id="view-leads">Leads </a>
@@ -107,7 +120,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="status">Status</label>
+                            <label for="status">Caller Status</label>
                             <select name="status" id="status" class="form-control">
                                 @foreach($statuses as $status)
                                     <option value="{{$status->id}}">{{$status->title}}</option>
@@ -203,10 +216,10 @@
                         note: `${item.note}<br/><a href="javascript:void(0)" class="note-modal" data-id="${item.id}" data-content="${item.note}"><i class="fa fa-plus"></i></a>`,
                         order_id: item.order_id,
                         publisher_id: item.publisher_id,
-                        status_admin: `<span class="${item.admin_status.class}">${item.admin_status.title}</span>`,
-                        status_caller: `<span class="${item.caller_status.class}">${item.caller_status.title}</span>`,
+                        status_admin: `<span class="${item.admin_status.class}" title="${item.admin_status.title}"></span>`,
+                        status_caller: `<span class="${item.caller_status.class}" title="${item.caller_status.title}"></span>`,
                         created_at: item.created_at,
-                        action: `<a title="Confirm" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="1"><i class="fa fa-check" aria-hidden="true"></i></a><a title="Cancel" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="2"><i class="fa fa-times-circle" aria-hidden="true"></i></a><a title="Hold" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="3"><i class="fa fa-pause" aria-hidden="true"></i></a><a title="Edit" href="javascript:void(0)" class="ml-1 edit-item" data-id="${item.id}" data-name="${item.name? item.name:''}" data-phone="${item.phone ? item.phone:'' }" data-email="${item.email?item.email:''}" data-address="${item.address?item.address:''}" data-status="${item.status_caller?item.status_caller:''}"><i class="fa fa-edit" aria-hidden="true"></i></a><a title="Trash" href="javascript:void(0)" class="status-item ml-1" data-id="${item.id}" data-status="4"><i class="fa fa-trash" aria-hidden="true"></i></a>`
+                        action: `<span class="btn-action d-block"><a title="Confirm" href="javascript:void(0)" class="status-item" data-id="${item.id}" data-status="1"><i class="fa fa-check" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Cancel" href="javascript:void(0)" class="status-item" data-id="${item.id}" data-status="2"><i class="fa fa-times-circle" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Hold" href="javascript:void(0)" class="status-item" data-id="${item.id}" data-status="3"><i class="fa fa-pause" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Edit" href="javascript:void(0)" class="edit-item" data-id="${item.id}" data-name="${item.name? item.name:''}" data-phone="${item.phone ? item.phone:'' }" data-email="${item.email?item.email:''}" data-address="${item.address?item.address:''}" data-status="${item.status_caller?item.status_caller:''}"><i class="fa fa-edit" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Trash" href="javascript:void(0)" class="status-item" data-id="${item.id}" data-status="4"><i class="fa fa-trash" aria-hidden="true"></i></a></span>`
                     });
                 })
 
@@ -216,30 +229,29 @@
                     autoWidth: false,
                     data: data,
                     columns:[
-                        {title:'',data:'checkbox',width:'20px'},
+                        {title:'',data:'checkbox',width:'20px',class:'text-center'},
                         {title:'Product',data:'product',width:'50px'},
-                        {title:'Order ID',data:'order_id',width:'50px'},
+                        {title:'OrderID',data:'order_id',width:'50px'},
                         {title:'DateTime',data:'created_at',width:'50px'},
                         {title:'Supplier',data:'supplier_name',width:'50px'},
                         {title:'Customer',data:'name',width:'50px'},
                         {title:'Phone',data:'phone',width:'50px'},
                         //{title:'Email',data:'email'},
                         {title:'Address',data:'address',width:'80px'},
-                        {title:'Status Admin',data:'status_admin',width:'30px'},
-                        {title:'Status Caller',data:'status_caller',width:'30px'},
                         {title:'Note',data:'note',width:'150px'},
-                        {title:'Action',data:'action',width:'50px'},
+                        {title:'Action',data:'action',width:'50px',class:'text-center'},
+                        {title:'Admin Status',data:'status_admin',width:'30px',class:'text-center'},
+                        {title:'Caller Status',data:'status_caller',width:'30px',class:'text-center'},
                     ],
                     //ordering: false,
                     info:     false,
                     lengthChange: false,
                     order: [[ 3, "desc" ]],
                     columnDefs: [
-                        {targets: 11, orderable: false, searchable: false},
-                        { targets: [0], orderable: false, searchable: false},
+                        { targets: [0,9,10,11], orderable: false, searchable: false},
+                        {targets:[2,6,7,8],orderable:false}
                     ]
                 });
-
             },
 
             errorMsg =    function (){
@@ -251,8 +263,8 @@
                 const data = JSON.parse(a.target.responseText);
                 $("#noteModal").modal('hide')
                 if(data.status){
-                    
-                    getURL(finalLeadURL(gStatus),printLeadTable,errorMsg,errorMsg)
+                    rowUpdate(data.lead)
+                   // getURL(finalLeadURL(gStatus),printLeadTable,errorMsg,errorMsg)
                 }else{
                     errorMsg()
                 }
@@ -261,16 +273,18 @@
                 console.log(a.target.responseText)
                 const data = JSON.parse(a.target.responseText);
                 if(data.status){
-                    $("#example").DataTable().destroy()
-                    getURL(finalLeadURL(gStatus),printLeadTable,errorMsg,errorMsg)
+                    rowUpdate(data.lead)
+                    ///$("#example").DataTable().destroy()
+                    //getURL(finalLeadURL(gStatus),printLeadTable,errorMsg,errorMsg)
                 }
             },
             leadEdit = function (a) {
                 console.log(a.target.responseText)
                 const data = JSON.parse(a.target.responseText);
                 if(data.status){
-                    $("#example").DataTable().destroy()
-                    getURL(finalLeadURL(gStatus),printLeadTable,errorMsg,errorMsg)
+                    rowUpdate(data.lead)
+                    //$("#example").DataTable().destroy()
+                    //getURL(finalLeadURL(gStatus),printLeadTable,errorMsg,errorMsg)
                 }
             },
             sendLead = function (a) {
@@ -280,12 +294,26 @@
                     $("#example").DataTable().destroy()
                     getURL(finalLeadURL(gStatus),printLeadTable,errorMsg,errorMsg)
                 }
+            },
+            rowUpdate = function (a) {
+                console.log(a)
+                const data = $("#example").DataTable().row(row_effected).data();
+                data.name = a.name
+                data.note = `${a.note}<br/><a href="javascript:void(0)" class="note-modal" data-id="${a.id}" data-content="${a.note}"><i class="fa fa-plus"></i></a>`
+                data.phone = a.phone
+                data.address = a.address
+                data.status_admin = `<span class="${a.admin_status.class}" title="${a.admin_status.title}"></span>`
+                data.status_caller   = `<span class="${a.caller_status.class}" title="${a.caller_status.title}"></span>`
+                data.action  = `<span class="btn-action d-block"><a title="Confirm" href="javascript:void(0)" class="status-item" data-id="${a.id}" data-status="1"><i class="fa fa-check" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Cancel" href="javascript:void(0)" class="status-item" data-id="${a.id}" data-status="2"><i class="fa fa-times-circle" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Hold" href="javascript:void(0)" class="status-item" data-id="${a.id}" data-status="3"><i class="fa fa-pause" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Edit" href="javascript:void(0)" class="edit-item" data-id="${a.id}" data-name="${a.name? a.name:''}" data-phone="${a.phone ? a.phone:'' }" data-email="${a.email?a.email:''}" data-address="${a.address?a.address:''}" data-status="${a.status_caller?a.status_caller:''}"><i class="fa fa-edit" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Trash" href="javascript:void(0)" class="status-item" data-id="${a.id}" data-status="4"><i class="fa fa-trash" aria-hidden="true"></i></a></span>`
+                $("#example").DataTable().row(row_effected).data(data).invalidate()
+                console.log(data)
             };
 
 
 
 
-            var selected_lead = [];
+            var selected_lead = [],
+                 row_effected;
 
 
 
@@ -331,8 +359,9 @@
 
 
             $("body").on('click','.note-modal',function () {
+                row_effected = this.parentElement.parentElement
                 $("#modal-note-id").val(this.dataset.id)
-                $("#modal-note").text(this.dataset.content)
+                $("#modal-note").val(this.dataset.content)
                 $("#noteModal").modal('show')
             })
 
@@ -355,7 +384,7 @@
                     data  = {
                         _method:'POST',
                     }
-
+                row_effected = this.parentElement.parentElement.parentElement
                 getURL(finalURL,leadStatus,errorMsg,errorMsg,data)
             })
 
@@ -365,7 +394,8 @@
                 $("#editModal #name").val(this.dataset.name)
                 $("#editModal #phone").val(this.dataset.phone)
                 $("#editModal #email").val(this.dataset.email)
-                $("#editModal #address").text(this.dataset.address)
+                $("#editModal #address").val(this.dataset.address)
+                row_effected = this.parentElement.parentElement.parentElement
                 const status = this.dataset.status
                 $("#editModal #status option").each(function () {
 
@@ -387,8 +417,6 @@
                         address:$("#editModal #address").val(),
                         caller_status:$("#editModal #status").val(),
                     }
-                    console.log(data)
-
                 getURL(finalURL,leadEdit,errorMsg,errorMsg,data)
                 $("#editModal").modal('hide')
             })

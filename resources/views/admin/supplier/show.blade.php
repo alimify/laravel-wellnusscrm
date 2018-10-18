@@ -9,6 +9,12 @@
 
 
 @section('content')
+    <div class="text-center">
+        <span class="btn btn-status-confirm"></span> Confirm
+        <span class="btn btn-status-cancel"></span> Cancel
+        <span class="btn btn-status-hold"></span> Hold
+        <span class="btn btn-status-trash"></span> Trash
+    </div>
     <div id="piechart" style="height: 500px;"></div>
 
     <div class="table-responsive">
@@ -39,8 +45,8 @@
                 <td>{{$lead->phone}}</td>
                 <td>{{$lead->email}}</td>
                 <td>{{$lead->address}}</td>
-                <td><span class="{{$lead->AdminStatus->class??''}}">{{$lead->AdminStatus->title??''}}</span></td>
-                <td><span class="{{$lead->CallerStatus->class??''}}">{{$lead->CallerStatus->title??''}}</span></td>
+                <td><span class="{{$lead->AdminStatus->class??''}}" title="{{$lead->AdminStatus->title??''}}"></span></td>
+                <td><span class="{{$lead->CallerStatus->class??''}}" title="{{$lead->CallerStatus->title??''}}"></span></td>
                 <td>{{$lead->note}}</td>
             </tr>
                 @endforeach

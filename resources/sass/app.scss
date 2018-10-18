@@ -62,3 +62,28 @@
     33.3333% {left: 0; width: 100%;z-index: 10;}
     to {left: 0; width: 100%;}
 }
+
+input[readonly="readonly"] {
+    border:0px;
+}
+.btn-status-trash{
+    background: darkred;
+    padding: 10px;
+    border-radius: 50%;
+}
+.btn-status-confirm{
+    background: darkgreen;
+    padding: 10px;
+    border-radius: 50%;
+}
+.btn-status-hold{
+    background: yellow;
+    padding: 10px;
+    border-radius: 50%;
+}
+
+.btn-status-cancel{
+    background: red;
+    padding: 10px;
+    border-radius: 50%;
+}

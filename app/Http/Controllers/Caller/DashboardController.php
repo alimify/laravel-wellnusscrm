@@ -25,13 +25,19 @@ class DashboardController extends Controller
                 return $query->where('caller_id',Auth::id())
                               ->orWhereNotNull('update_caller');
 
-                          })->where('status_caller',$request->status)
+                          })
+                         ->where('status_caller',$request->status)
                          ->whereBetween('created_at',[Carbon::createFromFormat('d-m-Y',$request->fromDate)->toDateTimeString(),Carbon::createFromFormat('d-m-Y',$request->toDate)->toDateTimeString()])
                          ->get();
 
         }else {
-            $gleads = Auth::user()->callerTask()
-                                  ->whereBetween('created_at',[$request->fromDate,$request->toDate])
+            $gleads =        Lead::where(function ($query){
+                                  return $query->where(function ($q){
+                                      return $q->where('update_caller','!=',NULL)->where('caller_id','!=',Auth::id());
+                                  })->orWhere('caller_id',Auth::id());
+            })
+                                  ->whereBetween('created_at',[Carbon::createFromFormat('d-m-Y',$request->fromDate)->toDateTimeString(),Carbon::createFromFormat('d-m-Y',$request->toDate)->toDateTimeString()])
+                                  ->where('status_caller','!=',1)
                                   ->get()
             ;
         }

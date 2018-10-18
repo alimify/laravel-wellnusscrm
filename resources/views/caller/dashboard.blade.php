@@ -38,11 +38,15 @@
                 <div class="bar"></div>
                 <div class="bar"></div>
             </div>
-
+            <div class="text-center">
+                <span class="btn btn-status-cancel"></span> Cancel
+                <span class="btn btn-status-hold"></span> Hold
+                <span class="btn btn-status-trash"></span> Trash
+            </div>
                 <h2>Leads</h2>
               <a href="javascript:void(0)" id="view-leads">Leads </a>
             - <a href="javascript:void(0)" id="view-hold">Hold </a>
-            - <a href="javascript:void(0)" id="view-confirm">Confirm </a>
+            <!-- <a href="javascript:void(0)" id="view-confirm">Confirm </a>-->
             - <a href="javascript:void(0)" id="view-cancelled">Cancelled </a>
             - <a href="javascript:void(0)" id="view-trash">Trash </a>
         <!--- <a href="{{route('admin.lead.restore.all')}}">Restore All</a>-->
@@ -182,7 +186,7 @@
                    address: `${item.address ? item.address+'<br/>' : ''}<a href="javascript:void(0)" class="address-modal text-center" data-id="${item.id}" data-content="${item.address?item.address:''}"><i class="fa fa-plus"></i></a>`,
                    order_id: item.order_id,
                    note: `${item.note ? item.note+'<br/>' : ''}<a href="javascript:void(0)" class="note-modal text-center" data-id="${item.id}" data-content="${item.note}"><i class="fa fa-plus"></i></a>`,
-                   status:`<span class="${item.caller_status.class}">${item.caller_status.title}</span>`,
+                   status:`<span class="${item.caller_status.class}"></span>`,
                    action:`<a title="Confirm" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="1"><i class="fa fa-check" aria-hidden="true"></i></a><a title="Cancel" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="2"><i class="fa fa-times-circle" aria-hidden="true"></i></a><a title="Hold" href="javascript:void(0)" class="ml-1 status-item" data-id="${item.id}" data-status="3"><i class="fa fa-pause" aria-hidden="true"></i></a><a title="Trash" href="javascript:void(0)" class="status-item ml-1" data-id="${item.id}" data-status="4"><i class="fa fa-trash" aria-hidden="true"></i></a>`
                })
             })

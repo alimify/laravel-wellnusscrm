@@ -127,10 +127,13 @@ class LeadController extends Controller
         $lead->address = $request->address;
         $lead->status_caller = $request->caller_status;
         $lead->save();
+        $lead->AdminStatus;
+        $lead->CallerStatus;
 
         return response()->json([
             'status' => true,
-            'id'  => $id
+            'id'  => $id,
+            'lead' => $lead
         ]);
     }
 
@@ -161,11 +164,14 @@ class LeadController extends Controller
         $lead = Lead::find($id);
         $lead->status_admin = $status;
         $lead->save();
+        $lead->AdminStatus;
+        $lead->CallerStatus;
 
         return response()->json([
             'status' => true,
             'lead_id' =>  $id,
-            'lead_status' => $status
+            'lead_status' => $status,
+            'lead' => $lead
         ]);
     }
 
@@ -176,18 +182,22 @@ class LeadController extends Controller
             return response()->json([
                 'status' => false,
                 'id'     => $request->id,
-                'note'   => $request->note
+                'note'   => $request->note,
+                'lead'   => ''
             ]);
         }
 
         $lead = Lead::find($request->id);
         $lead->note = $request->note;
         $lead->save();
+        $lead->AdminStatus;
+        $lead->CallerStatus;
 
         return response()->json([
             'status' => true,
             'id' => $request->id,
-            'note' => $request->note
+            'note' => $request->note,
+            'lead' => $lead
         ]);
     }
 

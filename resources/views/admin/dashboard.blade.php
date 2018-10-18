@@ -20,8 +20,8 @@
         <div class="bar"></div>
     </div>
     <div class="filtering form-inline justify-content-center">
-        <input type="text" class="form-control col-xs-10 col-sm-2 m-1" id="fromDate">
-        <input type="text" class="form-control col-xs-10 col-sm-2 m-1" id="toDate">
+        <input type="text" class="form-control col-xs-10 col-sm-2 m-1" id="fromDate" placeholder="fromDate">
+        <input type="text" class="form-control col-xs-10 col-sm-2 m-1" id="toDate" placeholder="toDate">
 
         <select id="supplier" class="form-control col-xs-10 col-sm-2 m-1 form-inline">
             <option value="">Supplier</option>
