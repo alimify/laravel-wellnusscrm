@@ -66,6 +66,11 @@
             <div class="table-responsive">
                 <table id="example" class="table table-striped table-bordered" style="width:100%">
                 </table>
+
+                <div class="form-inline">
+                    <input type="number" id="page-form-number" class="form-control col-sm-3 col-md-1" min="1" value="1">
+                    <input type="button" id="page-form-button" class="btn btn-action btn-success" value="JUMP">
+                </div>
             </div>
 
 
@@ -123,7 +128,9 @@
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{{asset('js/admin/jquery.ui.min.js')}}"></script>
-
+<script>
+    $.fn.DataTable.ext.pager.numbers_length = 20;
+</script>
 <script>
     $(document).ready(function() {
         const  listen = (a, b, c , d = true) => {
@@ -133,7 +140,6 @@
 
             getURL = function(url,load,error,abort,data = {}){
                 $("#load-bar").css('display','block')
-                console.log(url)
 
                 let ajax,
                     formdata = new FormData();
@@ -177,7 +183,7 @@
                 ajax.send(formdata);
             },
             printTaskTable = function (a) {
-                console.log(a.target.responseText)
+
                 const  json = JSON.parse(a.target.responseText),
                     data = [];
 
@@ -215,13 +221,18 @@
                         {title:'Action',data:'action'},
                     ],
                     //ordering: false,
-                    info:     false,
+                    info:     true,
                     lengthChange: false,
                     order: [[ 2, "desc" ]],
                     columnDefs: [
                         { targets: 8, orderable: false, searchable: false },
                         { targets: 0, orderable: false, searchable: false, }
-                    ]
+                    ],
+                    fnDrawCallback: function(pinfo){
+                        const pageinfo = this.api().page.info()
+                        $("#page-form-number").val(pageinfo.page+1)
+                        currentPageNumber = pageinfo.page
+                    }
                 });
 
             },
@@ -229,32 +240,50 @@
 
             },
             statusEdit = function (a) {
-                console.log(a.target.responseText)
+
                 const json = JSON.parse(a.target.responseText);
 
                 if(json.status){
-
-                    getURL(finalTaskURL(gStatus),printTaskTable,errorMSG,errorMSG)
+                    rowUpdate(json.lead)
+                   // getURL(finalTaskURL(gStatus),printTaskTable,errorMSG,errorMSG)
                 }
             },
             noteEdit = function (a) {
-                console.log(a.target.responseText)
+
                 const json = JSON.parse(a.target.responseText);
 
                 if(json.status){
-
-                    getURL(finalTaskURL(gStatus),printTaskTable,errorMSG,errorMSG)
+                    rowUpdate(json.lead)
+                    //getURL(finalTaskURL(gStatus),printTaskTable,errorMSG,errorMSG)
                 }
             },addressEdit = function (a) {
-                console.log(a.target.responseText)
+
                 const json = JSON.parse(a.target.responseText);
 
                 if(json.status){
-
-                    getURL(finalTaskURL(gStatus),printTaskTable,errorMSG,errorMSG)
+                    rowUpdate(json.lead)
+                    //getURL(finalTaskURL(gStatus),printTaskTable,errorMSG,errorMSG)
                 }
+            },
+            rowUpdate = function (a) {
+                const data = $("#example").DataTable().row(row_effected).data();
+                data.product = (a.product_id ? a.product.name : '')+(!a.update_caller ? `<span class="ml-3 badge badge-danger">new</span>`:'')
+                data.note = `${a.note ? a.note+'<br/>' : ''}<a href="javascript:void(0)" class="note-modal text-center" data-id="${a.id}" data-content="${a.note}"><i class="fa fa-plus"></i></a>`
+                data.address = `${a.address ? a.address+'<br/>' : ''}<a href="javascript:void(0)" class="address-modal text-center" data-id="${a.id}" data-content="${a.address?a.address:''}"><i class="fa fa-plus"></i></a>`
+                data.status = `<span class="${a.caller_status.class}"></span>`
+
+                //data.action  = `<span class="btn-action d-block"><a title="Confirm" href="javascript:void(0)" class="status-item" data-id="${a.id}" data-status="1"><i class="fa fa-check" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Cancel" href="javascript:void(0)" class="status-item" data-id="${a.id}" data-status="2"><i class="fa fa-times-circle" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Hold" href="javascript:void(0)" class="status-item" data-id="${a.id}" data-status="3"><i class="fa fa-pause" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Edit" href="javascript:void(0)" class="edit-item" data-id="${a.id}" data-name="${a.name? a.name:''}" data-phone="${a.phone ? a.phone:'' }" data-email="${a.email?a.email:''}" data-address="${a.address?a.address:''}" data-status="${a.status_caller?a.status_caller:''}"><i class="fa fa-edit" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Trash" href="javascript:void(0)" class="status-item" data-id="${a.id}" data-status="4"><i class="fa fa-trash" aria-hidden="true"></i></a></span>`
+
+                $("#example").DataTable().row(row_effected).data(data).invalidate()
+            },
+            printAPage = function (a) {
+                var table = $('#example').DataTable();
+                table.page( parseInt(a) ).draw( 'page' );
             };
 
+
+       var  row_effected,
+            currentPageNumber;
 
         var    appURL = '{{route('index')}}',
             taskURL = `{{route('caller.lead.all.ajax.data')}}`.replace(appURL,''),
@@ -271,13 +300,18 @@
         $("body").on('click','.status-item',function () {
             const URL = `{{route('caller.lead.status',['id' => 'leadid','status' => 'statusid'])}}`.replace('leadid',this.dataset.id).replace('statusid',this.dataset.status),
                 finalURL = URL.replace(appURL,'');
+            row_effected = this.parentElement.parentElement
+
             getURL(finalURL,statusEdit,errorMSG,errorMSG)
         })
 
 
         $("body").on('click','.note-modal',function () {
+            row_effected = this.parentElement.parentElement
+
             $("#noteModal #id").val(this.dataset.id)
-            $("#noteModal #note").text(this.dataset.content)
+            $("#noteModal #note").val(this.dataset.content)
+
             $("#noteModal").modal('show')
         })
 
@@ -294,8 +328,9 @@
         })
 
         $("body").on('click','.address-modal',function () {
+            row_effected = this.parentElement.parentElement
             $("#addressModal #id").val(this.dataset.id)
-            $("#addressModal #note").text(this.dataset.content)
+            $("#addressModal #note").val(this.dataset.content)
             $("#addressModal").modal('show')
         })
 
@@ -344,6 +379,12 @@
         $("#toDate").change(function () {
             getURL(finalTaskURL(gStatus),printTaskTable,errorMSG,errorMSG)
         })
+
+
+        $("#page-form-button").click(function () {
+            printAPage($("#page-form-number").val()-1)
+        })
+
     })
 </script>
 

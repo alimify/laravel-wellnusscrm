@@ -46,12 +46,16 @@
         <div class="filtering form-inline justify-content-center">
             <input type="text" class="form-control col-xs-10 col-sm-2 m-1" id="fromDate" value="{{$fromDate}}">
             <input type="text" class="form-control col-xs-10 col-sm-2 m-1" id="toDate" value="{{$toDate}}">
-            </select>
         </div>
+
 
         <div class="table-responsive display no-wrap">
             <table id="example" class="table table-striped table-bordered">
             </table>
+        <div class="form-inline">
+            <input type="number" id="page-form-number" class="form-control col-sm-3 col-md-1" min="1" value="1">
+            <input type="button" id="page-form-button" class="btn btn-action btn-success" value="JUMP">
+        </div>
         </div>
     <div class="justify-content-center form-inline mb-5 mt-3">
     <select id="callerId" class="form-control col-md-3 col-sm-8 form-inline">
@@ -244,13 +248,18 @@
                         {title:'Caller Status',data:'status_caller',width:'30px',class:'text-center'},
                     ],
                     //ordering: false,
-                    info:     false,
+                    info:     true,
                     lengthChange: false,
                     order: [[ 3, "desc" ]],
                     columnDefs: [
                         { targets: [0,9,10,11], orderable: false, searchable: false},
                         {targets:[2,6,7,8],orderable:false}
-                    ]
+                    ],
+                    fnDrawCallback: function(pinfo){
+                        const pageinfo = this.api().page.info()
+                        $("#page-form-number").val(pageinfo.page+1)
+                        currentPageNumber = pageinfo.page
+                    }
                 });
             },
 
@@ -307,13 +316,18 @@
                 data.action  = `<span class="btn-action d-block"><a title="Confirm" href="javascript:void(0)" class="status-item" data-id="${a.id}" data-status="1"><i class="fa fa-check" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Cancel" href="javascript:void(0)" class="status-item" data-id="${a.id}" data-status="2"><i class="fa fa-times-circle" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Hold" href="javascript:void(0)" class="status-item" data-id="${a.id}" data-status="3"><i class="fa fa-pause" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Edit" href="javascript:void(0)" class="edit-item" data-id="${a.id}" data-name="${a.name? a.name:''}" data-phone="${a.phone ? a.phone:'' }" data-email="${a.email?a.email:''}" data-address="${a.address?a.address:''}" data-status="${a.status_caller?a.status_caller:''}"><i class="fa fa-edit" aria-hidden="true"></i></a></span><span class="btn-action d-block"><a title="Trash" href="javascript:void(0)" class="status-item" data-id="${a.id}" data-status="4"><i class="fa fa-trash" aria-hidden="true"></i></a></span>`
                 $("#example").DataTable().row(row_effected).data(data).invalidate()
                 console.log(data)
+            },
+            printAPage = function (a) {
+                var table = $('#example').DataTable();
+                table.page(parseInt(a)).draw('page');
             };
 
 
 
 
             var selected_lead = [],
-                 row_effected;
+                 row_effected,
+                 currentPageNumber;
 
 
 
@@ -354,6 +368,7 @@
                     }
 
                 getURL(finalURL,sendLead,errorMsg,errorMsg,data)
+                selected_lead = []
             })
 
 
@@ -453,6 +468,10 @@
 
             $("#toDate").change(function () {
                 getURL(finalLeadURL(gStatus),printLeadTable,errorMsg,errorMsg)
+            })
+
+            $("#page-form-button").click(function () {
+                printAPage($("#page-form-number").val()-1)
             })
 
         } );

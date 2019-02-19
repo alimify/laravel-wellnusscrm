@@ -46,6 +46,7 @@
 <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
 <script>
     feather.replace()
+    $.fn.DataTable.ext.pager.numbers_length = 20;
 </script>
 @stack('script')
 </body>
