@@ -66,8 +66,12 @@ Route::group(['as' => 'admin.','prefix' => 'admin','namespace' => 'Admin','middl
 
 Route::group(['as' => 'caller.','prefix' => 'caller','namespace' => 'Caller','middleware' => ['caller']],function() {
 
+    Route::get('all','DashboardController@all')->name('all');
     Route::get('dashboard','DashboardController@index')->name('dashboard');
-    Route::any('indexAjax','DashboardController@indexAjax')->name('lead.ajax.data');
+
+    Route::any('allAjax','DashboardController@allAjax')->name('lead.all.ajax.data');
+    Route::any('indexAjax','DashboardController@indexAjax')->name('lead.index.ajax.data');
+
     Route::any('lead/note','LeadController@editNote')->name('lead.note.edit');
     Route::any('lead/address','LeadController@editAddress')->name('lead.address.edit');
     Route::any('lead/status/{id}/{status}','LeadController@leadStatus')->name('lead.status');
