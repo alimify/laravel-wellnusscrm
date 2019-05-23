@@ -59,6 +59,8 @@ Route::group(['as' => 'admin.','prefix' => 'admin','namespace' => 'Admin','middl
     Route::post('lead/sendTask','LeadController@sendTask')->name('lead.sendTask');
 
     Route::any('lead/ajax/data','LeadController@indexAjax')->name('lead.ajax');
+    Route::any('lead/ajax/same','LeadController@sameLead')->name('lead.ajax.same');
+
 });
 
 
@@ -71,6 +73,7 @@ Route::group(['as' => 'caller.','prefix' => 'caller','namespace' => 'Caller','mi
 
     Route::any('allAjax','DashboardController@allAjax')->name('lead.all.ajax.data');
     Route::any('indexAjax','DashboardController@indexAjax')->name('lead.index.ajax.data');
+    Route::any('lead/ajax/same','DashboardController@sameLead')->name('lead.ajax.same');
 
     Route::any('lead/note','LeadController@editNote')->name('lead.note.edit');
     Route::any('lead/address','LeadController@editAddress')->name('lead.address.edit');

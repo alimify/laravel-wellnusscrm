@@ -190,7 +190,7 @@
                 json.data.forEach(function (item) {
                     data.push({
                         id:item.id,
-                        product: (item.product_id ? item.product.name : '')+(!item.update_caller ? `<span class="ml-3 badge badge-danger">new</span>`:''),
+                        product: (item.product_id ? item.product.name : '')+(!item.update_caller ? `<span class="badge badge-pill badge-danger">new</span>`:'')+(item.doublel ? `<span class="badge badge-pill badge-success">double</span>`:''),
                         created_at: item.created_at,
                         name: item.name,
                         phone: item.phone,

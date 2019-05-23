@@ -123,6 +123,15 @@ class ApiController extends Controller
         $lead->update_admin                 = null;
         $lead->save();
 
+        $leadCount = Lead::where('product_id',$product->id)
+                            ->where('phone',$request->phone)->get()->count();
+
+        if($leadCount > 1){
+            Lead::where('product_id',$product->id)
+                ->where('phone',$request->phone)
+                ->update(['doublel' => true]);
+        }
+
         $data = [
             'product_id'                    => $request->product_id,
             'supplier_id'                   => $request->supplier_id,
@@ -313,6 +322,16 @@ class ApiController extends Controller
         $lead->update_caller                = null;
         $lead->update_admin                 = null;
         $lead->save();
+
+        $leadCount = Lead::where('product_id',$product->id)
+            ->where('phone',$request->phone)->get()->count();
+
+        if($leadCount > 1){
+            Lead::where('product_id',$product->id)
+                ->where('phone',$request->phone)
+                ->update(['doublel' => true]);
+        }
+
 
         $data = [
             'product_id'                    => $product->id,

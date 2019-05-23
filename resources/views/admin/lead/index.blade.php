@@ -210,7 +210,7 @@
                         id: item.id,
                         product_serial: item.proudct_serial,
                         supplier_serial: item.supplier_serial,
-                        product: (item.product_id ? item.product.name : '')+(!item.update_admin && !item.update_caller ? `<span class="ml-3 badge badge-danger">new</span>`:''),
+                        product: (item.product_id ? item.product.name : '')+(!item.update_admin && !item.update_caller ? `<span class="badge badge-pill badge-danger">new</span>`:'')+(item.doublel ? `<span class="badge badge-pill badge-success">double</span>`:''),
                         supplier_id: item.supplier_id,
                         supplier_name: item.supplier != null ? item.supplier.name : '',
                         name: `${item.name ? item.name : ''}`,

@@ -101,4 +101,14 @@ class DashboardController extends Controller
     }
 
 
+    public function sameLead(Request $request){
+        $leads = Lead::where('phone',$request->phone)
+            ->where('product_id',$request->product)->get();
+
+        return response()->json([
+            'leads'  => $leads
+        ]);
+    }
+
+
 }

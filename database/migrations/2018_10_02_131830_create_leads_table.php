@@ -31,6 +31,7 @@ class CreateLeadsTable extends Migration
             $table->integer('caller_id')->default(0);
             $table->timestamp('update_admin')->nullable();
             $table->timestamp('update_caller')->nullable();
+            $table->boolean('doublel')->default(false);
             $table->boolean('status')->default(true);
             $table->timestamps();
             $table->softDeletes();
